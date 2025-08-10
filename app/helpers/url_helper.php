@@ -1,0 +1,134 @@
+<?php
+// Redirecionar simples
+function redirect($page)
+{
+    header('location: ' . URLROOT . '/' . $page);
+    exit();
+}
+
+// Flash message helper
+function flash($name = '', $message = '', $class = 'alert alert-success')
+{
+    if (!empty($name)) {
+        if (!empty($message) && empty($_SESSION[$name])) {
+            if (!empty($_SESSION[$name])) {
+                unset($_SESSION[$name]);
+            }
+            
+            if (!empty($_SESSION[$name . '_class'])) {
+                unset($_SESSION[$name . '_class']);
+            }
+            
+            $_SESSION[$name] = $message;
+            $_SESSION[$name . '_class'] = $class;
+        } elseif (empty($message) && !empty($_SESSION[$name])) {
+            $class = !empty($_SESSION[$name . '_class']) ? $_SESSION[$name . '_class'] : '';
+            echo '<div class="' . $class . '" id="msg-flash">' . $_SESSION[$name] . '</div>';
+            unset($_SESSION[$name]);
+            unset($_SESSION[$name . '_class']);
+        }
+    }
+}
+
+// Verificar se está logado
+function isLoggedIn()
+{
+    if (isset($_SESSION['user_id'])) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// Formatar data brasileira
+function formatarData($data)
+{
+    if ($data && $data != '0000-00-00' && $data != '0000-00-00 00:00:00') {
+        return date('d/m/Y', strtotime($data));
+    }
+    return '-';
+}
+
+// Formatar data e hora brasileira
+function formatarDataHora($data)
+{
+    if ($data && $data != '0000-00-00 00:00:00') {
+        return date('d/m/Y H:i', strtotime($data));
+    }
+    return '-';
+}
+
+// Formatar valor monetário
+function formatarValor($valor)
+{
+    if ($valor && $valor > 0) {
+        return 'R$ ' . number_format($valor, 2, ',', '.');
+    }
+    return 'R$ 0,00';
+}
+
+// Truncar texto
+function truncarTexto($texto, $limite = 50)
+{
+    if (strlen($texto) > $limite) {
+        return substr($texto, 0, $limite) . '...';
+    }
+    return $texto;
+}
+
+// Status badge
+function statusBadge($status)
+{
+    $badges = [
+        'aberta' => 'badge badge-warning',
+        'em_andamento' => 'badge badge-info',
+        'aguardando_peca' => 'badge badge-secondary',
+        'aguardando_cliente' => 'badge badge-primary',
+        'concluida' => 'badge badge-success',
+        'cancelada' => 'badge badge-danger'
+    ];
+    
+    $labels = [
+        'aberta' => 'Aberta',
+        'em_andamento' => 'Em Andamento',
+        'aguardando_peca' => 'Aguardando Peça',
+        'aguardando_cliente' => 'Aguardando Cliente',
+        'concluida' => 'Concluída',
+        'cancelada' => 'Cancelada'
+    ];
+    
+    $class = isset($badges[$status]) ? $badges[$status] : 'badge badge-secondary';
+    $label = isset($labels[$status]) ? $labels[$status] : ucfirst($status);
+    
+    return '<span class="' . $class . '">' . $label . '</span>';
+}
+
+// Prioridade badge
+function prioridadeBadge($prioridade)
+{
+    $badges = [
+        'baixa' => 'badge badge-success',
+        'media' => 'badge badge-warning',
+        'alta' => 'badge badge-danger',
+        'urgente' => 'badge badge-dark'
+    ];
+    
+    $labels = [
+        'baixa' => 'Baixa',
+        'media' => 'Média',
+        'alta' => 'Alta',
+        'urgente' => 'Urgente'
+    ];
+    
+    $class = isset($badges[$prioridade]) ? $badges[$prioridade] : 'badge badge-secondary';
+    $label = isset($labels[$prioridade]) ? $labels[$prioridade] : ucfirst($prioridade);
+    
+    return '<span class="' . $class . '">' . $label . '</span>';
+}
+
+// Gerar número da OS
+function gerarNumeroOS($id)
+{
+    return str_pad($id, 6, '0', STR_PAD_LEFT);
+}
+

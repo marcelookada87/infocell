@@ -1,0 +1,74 @@
+<?php
+
+class DashboardController extends Controller
+{
+    private $ordemServicoModel;
+    private $clienteModel;
+    private $dispositivoModel;
+    
+    public function __construct()
+    {
+        // Verificar se está logado
+        if (!isset($_SESSION['user_id'])) {
+            redirect('auth/login');
+        }
+        
+        // Inicializar models apenas se necessário
+        try {
+            $this->ordemServicoModel = $this->model('OrdemServico');
+            $this->clienteModel = $this->model('Cliente');
+            $this->dispositivoModel = $this->model('Dispositivo');
+        } catch (Exception $e) {
+            // Se houver erro com banco, usar dados mock
+            $this->ordemServicoModel = null;
+            $this->clienteModel = null;
+            $this->dispositivoModel = null;
+        }
+    }
+    
+    public function index()
+    {
+        // Buscar dados para dashboard ou usar dados mock se não há conexão
+        if ($this->ordemServicoModel && $this->clienteModel && $this->dispositivoModel) {
+            $data = [
+                'total_ordens' => $this->ordemServicoModel->getTotalOrdens(),
+                'ordens_abertas' => $this->ordemServicoModel->getOrdensAbertas(),
+                'ordens_andamento' => $this->ordemServicoModel->getOrdensAndamento(),
+                'ordens_concluidas' => $this->ordemServicoModel->getOrdensConcluidas(),
+                'total_clientes' => $this->clienteModel->getTotalClientes(),
+                'ordens_recentes' => $this->ordemServicoModel->getOrdensRecentes(10),
+                'dispositivos_mais_reparados' => $this->dispositivoModel->getDispositivosMaisReparados(5),
+                'receita_mensal' => $this->ordemServicoModel->getReceitaMensal(),
+                'user_name' => $_SESSION['user_name'] ?? 'Usuário'
+            ];
+        } else {
+            // Dados mock para demonstração
+            $data = [
+                'total_ordens' => 0,
+                'ordens_abertas' => 0,
+                'ordens_andamento' => 0,
+                'ordens_concluidas' => 0,
+                'total_clientes' => 0,
+                'ordens_recentes' => [],
+                'dispositivos_mais_reparados' => [],
+                'receita_mensal' => 0,
+                'user_name' => $_SESSION['user_name'] ?? 'Usuário'
+            ];
+        }
+        
+        $this->view('dashboard/index', $data);
+    }
+    
+    public function perfil()
+    {
+        $userModel = $this->model('User');
+        $user = $userModel->getUserById($_SESSION['user_id']);
+        
+        $data = [
+            'user' => $user
+        ];
+        
+        $this->view('dashboard/perfil', $data);
+    }
+}
+

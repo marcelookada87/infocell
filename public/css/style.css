@@ -1,0 +1,403 @@
+/* InfoCell OS - Sistema de Ordem de Serviço */
+/* Custom CSS */
+
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --sidebar-width: 250px;
+}
+
+/* Body e Layout Geral */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    background-color: #f8f9fa;
+}
+
+/* Navbar customizations */
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.navbar-brand i {
+    margin-right: 8px;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 56px;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 48px 0 0;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+
+.sidebar-sticky {
+    position: relative;
+    top: 0;
+    height: calc(100vh - 48px);
+    padding-top: .5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.sidebar .nav-link {
+    font-weight: 500;
+    color: #333;
+    padding: 10px 16px;
+    margin-bottom: 2px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.sidebar .nav-link:hover {
+    color: var(--primary-color);
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.sidebar .nav-link.active {
+    color: var(--primary-color);
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.sidebar .nav-link i {
+    margin-right: 8px;
+    width: 16px;
+    text-align: center;
+}
+
+.sidebar-heading {
+    font-size: .75rem;
+    text-transform: uppercase;
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 0;
+    padding-top: 80px;
+}
+
+@media (min-width: 768px) {
+    .main-content {
+        margin-left: var(--sidebar-width);
+    }
+}
+
+/* Cards personalizados */
+.border-left-primary {
+    border-left: 0.25rem solid var(--primary-color) !important;
+}
+
+.border-left-success {
+    border-left: 0.25rem solid var(--success-color) !important;
+}
+
+.border-left-info {
+    border-left: 0.25rem solid var(--info-color) !important;
+}
+
+.border-left-warning {
+    border-left: 0.25rem solid var(--warning-color) !important;
+}
+
+.border-left-danger {
+    border-left: 0.25rem solid var(--danger-color) !important;
+}
+
+.border-left-secondary {
+    border-left: 0.25rem solid var(--secondary-color) !important;
+}
+
+/* Status badges personalizados */
+.badge {
+    font-size: 0.75em;
+    font-weight: 500;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+}
+
+.badge-aberta {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-em_andamento {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.badge-aguardando_peca {
+    background-color: #6c757d;
+    color: white;
+}
+
+.badge-aguardando_cliente {
+    background-color: #007bff;
+    color: white;
+}
+
+.badge-concluida {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-cancelada {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Prioridade badges */
+.badge-baixa {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-media {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-alta {
+    background-color: #fd7e14;
+    color: white;
+}
+
+.badge-urgente {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Tabelas */
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: #495057;
+    background-color: #f8f9fa;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* Botões */
+.btn {
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.btn-group .btn {
+    margin-right: 2px;
+}
+
+.btn-group .btn:last-child {
+    margin-right: 0;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
+}
+
+/* Forms */
+.form-control, .form-select {
+    border-radius: 0.375rem;
+    border: 1px solid #ced4da;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+    .sidebar {
+        display: none;
+    }
+    
+    .main-content {
+        margin-left: 0;
+        padding-top: 70px;
+    }
+    
+    .navbar-nav .dropdown-menu {
+        position: static !important;
+        float: none !important;
+        width: auto;
+        margin-top: 0;
+        background-color: transparent;
+        border: 0;
+        box-shadow: none;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .btn-group .btn {
+        margin-bottom: 2px;
+        margin-right: 0;
+    }
+}
+
+/* Utilities */
+.text-xs {
+    font-size: 0.75rem;
+}
+
+.font-weight-bold {
+    font-weight: 700 !important;
+}
+
+.text-gray-800 {
+    color: #5a5c69 !important;
+}
+
+.text-gray-300 {
+    color: #dddfeb !important;
+}
+
+/* Loading spinner */
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Flash messages */
+#msg-flash {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    z-index: 1050;
+    min-width: 300px;
+}
+
+/* Custom scrollbar */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
+
+/* Print styles */
+@media print {
+    .sidebar,
+    .navbar,
+    .btn,
+    .btn-group {
+        display: none !important;
+    }
+    
+    .main-content {
+        margin-left: 0 !important;
+        padding-top: 0 !important;
+    }
+    
+    .card {
+        border: 1px solid #dee2e6 !important;
+        box-shadow: none !important;
+    }
+}
+
+/* Dark mode support (opcional) */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #1a1a1a;
+        color: #ffffff;
+    }
+    
+    .card {
+        background-color: #2d2d2d;
+        color: #ffffff;
+    }
+    
+    .sidebar {
+        background-color: #2d2d2d;
+    }
+    
+    .table {
+        color: #ffffff;
+    }
+    
+    .table th {
+        background-color: #3d3d3d;
+    }
+}
+
+/* Animações */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Status indicators */
+.status-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.status-aberta { background-color: #ffc107; }
+.status-em_andamento { background-color: #17a2b8; }
+.status-aguardando_peca { background-color: #6c757d; }
+.status-aguardando_cliente { background-color: #007bff; }
+.status-concluida { background-color: #28a745; }
+.status-cancelada { background-color: #dc3545; }
+
