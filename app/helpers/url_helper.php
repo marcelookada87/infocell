@@ -22,53 +22,26 @@ function redirect($page)
     }
 }
 
-// Flash message helper
+// Flash message helper simplificado (sem sessão)
 function flash($name = '', $message = '', $class = 'alert alert-success')
 {
-    if (!empty($name)) {
-        if (!empty($message) && empty($_SESSION[$name])) {
-            if (!empty($_SESSION[$name])) {
-                unset($_SESSION[$name]);
-            }
-            
-            if (!empty($_SESSION[$name . '_class'])) {
-                unset($_SESSION[$name . '_class']);
-            }
-            
-            $_SESSION[$name] = $message;
-            $_SESSION[$name . '_class'] = $class;
-        } elseif (empty($message) && !empty($_SESSION[$name])) {
-            $class = !empty($_SESSION[$name . '_class']) ? $_SESSION[$name . '_class'] : '';
-            echo '<div class="' . $class . '" id="msg-flash">' . $_SESSION[$name] . '</div>';
-            unset($_SESSION[$name]);
-            unset($_SESSION[$name . '_class']);
-        }
-    }
+    // Como removemos sessões, vamos apenas ignorar flash messages por enquanto
+    // Em uma implementação futura, poderia usar cookies ou localStorage
+    return;
 }
 
-// Verificar se está logado (sessão ou cookie)
-function isLoggedIn()
-{
-    // Primeiro verifica se há sessão ativa
-    if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
-        return true;
-    }
-    
-    // Se não há sessão, verifica se há cookie válido
-    if (function_exists('isLoggedInByCookie')) {
-        return isLoggedInByCookie();
-    }
-    
-    return false;
-}
+// Verificar se está logado via cookie
+// Nota: Esta função está definida em cookie_helper.php
 
 // Formatar data brasileira
-function formatarData($data)
-{
-    if ($data && $data != '0000-00-00' && $data != '0000-00-00 00:00:00') {
-        return date('d/m/Y', strtotime($data));
+if (!function_exists('formatarData')) {
+    function formatarData($data)
+    {
+        if ($data && $data != '0000-00-00' && $data != '0000-00-00 00:00:00') {
+            return date('d/m/Y', strtotime($data));
+        }
+        return '-';
     }
-    return '-';
 }
 
 // Formatar data e hora brasileira
@@ -103,7 +76,7 @@ function statusBadge($status)
 {
     $badges = [
         'aberta' => 'badge bg-warning text-dark',
-        'em_andamento' => 'badge bg-info text-white',
+        'emandamento' => 'badge bg-info text-white',
         'aguardando_peca' => 'badge bg-secondary text-white',
         'aguardando_cliente' => 'badge bg-primary text-white',
         'concluida' => 'badge bg-success text-white',
@@ -112,7 +85,7 @@ function statusBadge($status)
     
     $labels = [
         'aberta' => 'Aberta',
-        'em_andamento' => 'Em Andamento',
+        'emandamento' => 'Em Andamento',
         'aguardando_peca' => 'Aguardando Peça',
         'aguardando_cliente' => 'Aguardando Cliente',
         'concluida' => 'Concluída',
@@ -153,4 +126,3 @@ function gerarNumeroOS($id)
 {
     return str_pad($id, 6, '0', STR_PAD_LEFT);
 }
-

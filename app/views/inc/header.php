@@ -154,7 +154,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-user-circle"></i> 
-                            <?php echo $_SESSION['user_name'] ?? 'Usuário'; ?>
+                            <?php echo getLoggedInUserName(); ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="<?php echo URLROOT; ?>/dashboard/perfil">

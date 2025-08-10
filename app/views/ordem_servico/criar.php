@@ -168,7 +168,7 @@
                                     <ul class="list-unstyled small mb-0">
                                         <li><strong>Status inicial:</strong> Aberta</li>
                                         <li><strong>Data de entrada:</strong> <?php echo date('d/m/Y'); ?></li>
-                                        <li><strong>Responsável:</strong> <?php echo $_SESSION['user_name']; ?></li>
+                                        <li><strong>Responsável:</strong> <?php echo getLoggedInUserName(); ?></li>
                                     </ul>
                                 </div>
                             </div>
