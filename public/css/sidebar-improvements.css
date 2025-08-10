@@ -1,0 +1,336 @@
+/* ========================================
+   InfoCell OS - Sidebar Improvements CSS
+   Melhorias adicionais para o menu lateral esquerdo
+   ======================================== */
+
+/* ========================================
+   MELHORIAS DE PERFORMANCE
+   ======================================== */
+
+/* Otimização de transições para dispositivos com preferência reduzida */
+@media (prefers-reduced-motion: reduce) {
+    .sidebar,
+    .sidebar *,
+    .nav-link,
+    .submenu-link,
+    .sidebar-toggle,
+    .theme-toggle-btn {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* ========================================
+   MELHORIAS DE ACESSIBILIDADE
+   ======================================== */
+
+/* Melhor contraste para leitores de tela */
+.sidebar {
+    --sidebar-text-high-contrast: #ffffff;
+    --sidebar-text-muted-high-contrast: #cbd5e1;
+}
+
+/* Indicadores visuais para foco */
+.nav-link:focus-visible,
+.submenu-link:focus-visible,
+.sidebar-toggle:focus-visible,
+.theme-toggle-btn:focus-visible {
+    outline: 3px solid var(--sidebar-active-bg);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Melhor contraste para texto ativo */
+.nav-link.active,
+.submenu-link.active {
+    color: var(--sidebar-text-high-contrast) !important;
+    font-weight: 600;
+}
+
+/* ========================================
+   MELHORIAS DE RESPONSIVIDADE
+   ======================================== */
+
+/* Breakpoint intermediário para tablets */
+@media (max-width: 1200px) and (min-width: 1025px) {
+    :root {
+        --sidebar-width: 250px;
+        --sidebar-width-collapsed: 60px;
+    }
+    
+    .sidebar.collapsed .nav-icon {
+        font-size: 1.1rem;
+    }
+}
+
+/* Melhorias para dispositivos muito pequenos */
+@media (max-width: 480px) {
+    :root {
+        --sidebar-width: 100vw;
+        --sidebar-width-collapsed: 100vw;
+    }
+    
+    .sidebar {
+        width: 100vw;
+    }
+    
+    .sidebar.show {
+        transform: translateX(0);
+    }
+    
+    .sidebar.hide {
+        transform: translateX(-100%);
+    }
+}
+
+/* ========================================
+   MELHORIAS DE ANIMAÇÃO
+   ======================================== */
+
+/* Animações suaves para submenus */
+.submenu {
+    transform-origin: top;
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.2s ease-out,
+                transform 0.2s ease-out;
+}
+
+.nav-item.open .submenu {
+    opacity: 1;
+    transform: scaleY(1);
+}
+
+.submenu:not(.open) {
+    opacity: 0;
+    transform: scaleY(0.8);
+}
+
+/* Hover effects melhorados */
+.nav-link:hover,
+.submenu-link:hover {
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ========================================
+   MELHORIAS DE ESTADO
+   ======================================== */
+
+/* Estados de loading melhorados */
+.sidebar.loading::after {
+    background: linear-gradient(45deg, 
+        var(--sidebar-border) 25%, 
+        transparent 25%, 
+        transparent 50%, 
+        var(--sidebar-border) 50%, 
+        var(--sidebar-border) 75%, 
+        transparent 75%, 
+        transparent);
+    background-size: 20px 20px;
+    animation: loading 1s linear infinite;
+}
+
+@keyframes loading {
+    0% { background-position: 0 0; }
+    100% { background-position: 20px 20px; }
+}
+
+/* Estados de erro */
+.sidebar.error {
+    border-left: 4px solid #ef4444;
+}
+
+.sidebar.error::before {
+    content: '⚠️';
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    z-index: 10;
+}
+
+/* ========================================
+   MELHORIAS DE TEMA
+   ======================================== */
+
+/* Tema claro */
+[data-theme="light"] .sidebar {
+    --sidebar-bg: #ffffff;
+    --sidebar-bg-hover: #f8fafc;
+    --sidebar-border: #e2e8f0;
+    --sidebar-text: #1e293b;
+    --sidebar-text-muted: #64748b;
+    --sidebar-active-bg: #3b82f6;
+    --sidebar-active-text: #ffffff;
+    --sidebar-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Tema escuro */
+[data-theme="dark"] .sidebar {
+    --sidebar-bg: #0f172a;
+    --sidebar-bg-hover: #1e293b;
+    --sidebar-border: #334155;
+    --sidebar-text: #f1f5f9;
+    --sidebar-text-muted: #64748b;
+    --sidebar-active-bg: #3b82f6;
+    --sidebar-active-text: #ffffff;
+    --sidebar-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+/* Tema automático baseado na preferência do sistema */
+@media (prefers-color-scheme: light) {
+    .sidebar:not([data-theme]) {
+        --sidebar-bg: #ffffff;
+        --sidebar-bg-hover: #f8fafc;
+        --sidebar-border: #e2e8f0;
+        --sidebar-text: #1e293b;
+        --sidebar-text-muted: #64748b;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .sidebar:not([data-theme]) {
+        --sidebar-bg: #0f172a;
+        --sidebar-bg-hover: #1e293b;
+        --sidebar-border: #334155;
+        --sidebar-text: #f1f5f9;
+        --sidebar-text-muted: #64748b;
+    }
+}
+
+/* ========================================
+   MELHORIAS DE NOTIFICAÇÕES
+   ======================================== */
+
+/* Badge de notificação melhorado */
+.nav-badge {
+    background: linear-gradient(45deg, #ef4444, #dc2626);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    min-width: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Badge com contador */
+.nav-badge[data-count]:not([data-count="0"]) {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ========================================
+   MELHORIAS DE INTERAÇÃO
+   ======================================== */
+
+/* Tooltip para itens colapsados */
+.sidebar.collapsed .nav-item {
+    position: relative;
+}
+
+.sidebar.collapsed .nav-item:hover::after {
+    content: attr(data-title);
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 1000;
+    margin-left: 0.5rem;
+    box-shadow: var(--sidebar-shadow);
+    border: 1px solid var(--sidebar-border);
+}
+
+/* Melhor feedback visual para cliques */
+.nav-link:active,
+.submenu-link:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+}
+
+/* ========================================
+   MELHORIAS DE SCROLL
+   ======================================== */
+
+/* Scrollbar personalizada para Firefox */
+.sidebar-nav {
+    scrollbar-width: thin;
+    scrollbar-color: var(--sidebar-border) transparent;
+}
+
+/* Scrollbar personalizada para Webkit */
+.sidebar-nav::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+    background: var(--sidebar-border);
+    border-radius: 3px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+    background: var(--sidebar-bg-hover);
+}
+
+/* ========================================
+   MELHORIAS DE PRINT
+   ======================================== */
+
+@media print {
+    .sidebar {
+        display: none !important;
+    }
+    
+    .main-content {
+        margin-left: 0 !important;
+    }
+}
+
+/* ========================================
+   MELHORIAS DE DEBUG
+   ======================================== */
+
+/* Classe para debug visual */
+.sidebar.debug {
+    outline: 2px dashed red;
+}
+
+.sidebar.debug * {
+    outline: 1px dotted blue;
+}
+
+/* Indicador de estado para desenvolvedores */
+.sidebar::before {
+    content: attr(data-state);
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    z-index: 1001;
+    display: none;
+}
+
+.sidebar.debug::before {
+    display: block;
+}
