@@ -17,10 +17,13 @@ CREATE TABLE usuarios (
     senha VARCHAR(255) NOT NULL,
     tipo ENUM('admin', 'tecnico', 'atendente') NOT NULL DEFAULT 'tecnico',
     ativo BOOLEAN DEFAULT TRUE,
+    auth_hash VARCHAR(255) NULL,
+    ultimo_login TIMESTAMP NULL,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_email (email),
-    INDEX idx_tipo (tipo)
+    INDEX idx_tipo (tipo),
+    INDEX idx_auth_hash (auth_hash)
 ) ENGINE=InnoDB;
 
 -- ============================================
@@ -282,3 +285,11 @@ CREATE INDEX idx_clientes_nome_telefone ON clientes(nome, telefone);
 -- Fim do script
 -- ============================================
 
+
+-- Adicionar colunas de autenticação na tabela usuarios
+ALTER TABLE usuarios 
+ADD COLUMN auth_hash VARCHAR(255) NULL AFTER ativo,
+ADD COLUMN ultimo_login TIMESTAMP NULL AFTER auth_hash;
+
+-- Criar índice para auth_hash
+CREATE INDEX idx_auth_hash ON usuarios(auth_hash);

@@ -5,11 +5,14 @@ class OrdemServicoController extends Controller
     private $ordemServicoModel;
     private $clienteModel;
     private $dispositivoModel;
+    private $userModel;
     
     public function __construct()
     {
         // Verificar se está logado
-        if (!isset($_SESSION['user_id'])) {
+        $this->userModel = $this->model('User');
+        
+        if (!$this->userModel->isLoggedIn()) {
             redirect('auth/login');
         }
         

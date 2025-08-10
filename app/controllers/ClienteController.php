@@ -3,11 +3,14 @@
 class ClienteController extends Controller
 {
     private $clienteModel;
+    private $userModel;
     
     public function __construct()
     {
         // Verificar se está logado
-        if (!isset($_SESSION['user_id'])) {
+        $this->userModel = $this->model('User');
+        
+        if (!$this->userModel->isLoggedIn()) {
             redirect('auth/login');
         }
         

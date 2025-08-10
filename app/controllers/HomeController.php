@@ -5,7 +5,9 @@ class HomeController extends Controller
     public function index()
     {
         // Verificar se está logado
-        if (isset($_SESSION['user_id'])) {
+        $userModel = $this->model('User');
+        
+        if ($userModel->isLoggedIn()) {
             // Se logado, redirecionar para dashboard
             redirect('dashboard');
         } else {
