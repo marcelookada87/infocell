@@ -2,156 +2,150 @@
 
 class Cliente
 {
-    private $db;
-    
     public function __construct()
     {
-        $this->db = new Database;
+        // Não precisa mais instanciar Database, as funções PDO são estáticas
     }
     
     // Criar cliente
     public function criarCliente($data)
     {
-        $this->db->query('INSERT INTO clientes (nome, email, telefone, cpf, endereco, cidade, cep) 
-                         VALUES(:nome, :email, :telefone, :cpf, :endereco, :cidade, :cep)');
+        $sql = 'INSERT INTO clientes (nome, email, telefone, cpf, endereco, cidade, cep) 
+                VALUES(:nome, :email, :telefone, :cpf, :endereco, :cidade, :cep)';
         
-        $this->db->bind(':nome', $data['nome']);
-        $this->db->bind(':email', $data['email']);
-        $this->db->bind(':telefone', $data['telefone']);
-        $this->db->bind(':cpf', $data['cpf']);
-        $this->db->bind(':endereco', $data['endereco']);
-        $this->db->bind(':cidade', $data['cidade']);
-        $this->db->bind(':cep', $data['cep']);
+        $params = [
+            ':nome' => $data['nome'],
+            ':email' => $data['email'],
+            ':telefone' => $data['telefone'],
+            ':cpf' => $data['cpf'],
+            ':endereco' => $data['endereco'],
+            ':cidade' => $data['cidade'],
+            ':cep' => $data['cep']
+        ];
         
-        if ($this->db->execute()) {
-            return true;
-        } else {
-            return false;
-        }
+        $result = pdo_query($sql, $params);
+        
+        return $result !== false;
     }
     
     // Buscar todos os clientes
     public function getClientes()
     {
-        $this->db->query('SELECT * FROM clientes ORDER BY nome ASC');
+        $sql = 'SELECT * FROM clientes ORDER BY nome ASC';
         
-        $results = $this->db->resultSet();
+        $result = pdo_query($sql);
         
-        return $results;
+        return pdo_fetch_array($result);
     }
     
     // Buscar cliente por ID
     public function getClienteById($id)
     {
-        $this->db->query('SELECT * FROM clientes WHERE id = :id');
-        $this->db->bind(':id', $id);
+        $sql = 'SELECT * FROM clientes WHERE id = :id';
+        $params = [':id' => $id];
         
-        $row = $this->db->single();
+        $result = pdo_query($sql, $params);
         
-        return $row;
+        return pdo_fetch_item($result);
     }
     
     // Atualizar cliente
     public function atualizarCliente($data)
     {
-        $this->db->query('UPDATE clientes SET nome = :nome, email = :email, telefone = :telefone, 
-                         cpf = :cpf, endereco = :endereco, cidade = :cidade, cep = :cep 
-                         WHERE id = :id');
+        $sql = 'UPDATE clientes SET nome = :nome, email = :email, telefone = :telefone, 
+                cpf = :cpf, endereco = :endereco, cidade = :cidade, cep = :cep 
+                WHERE id = :id';
         
-        $this->db->bind(':id', $data['id']);
-        $this->db->bind(':nome', $data['nome']);
-        $this->db->bind(':email', $data['email']);
-        $this->db->bind(':telefone', $data['telefone']);
-        $this->db->bind(':cpf', $data['cpf']);
-        $this->db->bind(':endereco', $data['endereco']);
-        $this->db->bind(':cidade', $data['cidade']);
-        $this->db->bind(':cep', $data['cep']);
+        $params = [
+            ':id' => $data['id'],
+            ':nome' => $data['nome'],
+            ':email' => $data['email'],
+            ':telefone' => $data['telefone'],
+            ':cpf' => $data['cpf'],
+            ':endereco' => $data['endereco'],
+            ':cidade' => $data['cidade'],
+            ':cep' => $data['cep']
+        ];
         
-        if ($this->db->execute()) {
-            return true;
-        } else {
-            return false;
-        }
+        $result = pdo_query($sql, $params);
+        
+        return $result !== false;
     }
     
     // Deletar cliente
     public function deletarCliente($id)
     {
-        $this->db->query('DELETE FROM clientes WHERE id = :id');
-        $this->db->bind(':id', $id);
+        $sql = 'DELETE FROM clientes WHERE id = :id';
+        $params = [':id' => $id];
         
-        if ($this->db->execute()) {
-            return true;
-        } else {
-            return false;
-        }
+        $result = pdo_query($sql, $params);
+        
+        return $result !== false;
     }
     
     // Encontrar cliente por email
     public function findClienteByEmail($email)
     {
-        $this->db->query('SELECT * FROM clientes WHERE email = :email');
-        $this->db->bind(':email', $email);
+        $sql = 'SELECT * FROM clientes WHERE email = :email';
+        $params = [':email' => $email];
         
-        $row = $this->db->single();
+        $result = pdo_query($sql, $params);
         
-        if ($this->db->rowCount() > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        $row = pdo_fetch_item($result);
+        
+        return !empty($row);
     }
     
     // Encontrar cliente por CPF
     public function findClienteByCpf($cpf)
     {
-        $this->db->query('SELECT * FROM clientes WHERE cpf = :cpf');
-        $this->db->bind(':cpf', $cpf);
+        $sql = 'SELECT * FROM clientes WHERE cpf = :cpf';
+        $params = [':cpf' => $cpf];
         
-        $row = $this->db->single();
+        $result = pdo_query($sql, $params);
         
-        if ($this->db->rowCount() > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        $row = pdo_fetch_item($result);
+        
+        return !empty($row);
     }
     
     // Buscar clientes por nome
     public function buscarClientesPorNome($nome)
     {
-        $this->db->query('SELECT * FROM clientes WHERE nome LIKE :nome ORDER BY nome ASC');
-        $this->db->bind(':nome', '%' . $nome . '%');
+        $sql = 'SELECT * FROM clientes WHERE nome LIKE :nome ORDER BY nome ASC';
+        $params = [':nome' => '%' . $nome . '%'];
         
-        $results = $this->db->resultSet();
+        $result = pdo_query($sql, $params);
         
-        return $results;
+        return pdo_fetch_array($result);
     }
     
     // Contar total de clientes
     public function getTotalClientes()
     {
-        $this->db->query('SELECT COUNT(*) as total FROM clientes');
+        $sql = 'SELECT COUNT(*) as total FROM clientes';
         
-        $row = $this->db->single();
+        $result = pdo_query($sql);
         
-        return $row->total;
+        $row = pdo_fetch_item($result);
+        
+        return $row['total'] ?? 0;
     }
     
     // Clientes mais ativos (com mais ordens de serviço)
     public function getClientesMaisAtivos($limit = 10)
     {
-        $this->db->query('SELECT c.nome, c.telefone, COUNT(os.id) as total_ordens 
-                         FROM clientes c 
-                         LEFT JOIN ordens_servico os ON c.id = os.cliente_id 
-                         GROUP BY c.id 
-                         ORDER BY total_ordens DESC 
-                         LIMIT :limit');
-        $this->db->bind(':limit', $limit);
+        $sql = 'SELECT c.nome, c.telefone, COUNT(os.id) as total_ordens 
+                FROM clientes c 
+                LEFT JOIN ordens_servico os ON c.id = os.cliente_id 
+                GROUP BY c.id 
+                ORDER BY total_ordens DESC 
+                LIMIT :limit';
+        $params = [':limit' => $limit];
         
-        $results = $this->db->resultSet();
+        $result = pdo_query($sql, $params);
         
-        return $results;
+        return pdo_fetch_array($result);
     }
 }
 

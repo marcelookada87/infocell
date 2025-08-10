@@ -94,65 +94,65 @@
                     <?php foreach ($data['ordens'] as $ordem): ?>
                     <tr>
                         <td>
-                            <strong>#<?php echo gerarNumeroOS($ordem->id); ?></strong>
+                            <strong>#<?php echo gerarNumeroOS($ordem['id']); ?></strong>
                         </td>
                         <td>
                             <div>
-                                <strong><?php echo $ordem->cliente_nome; ?></strong><br>
+                                <strong><?php echo $ordem['cliente_nome']; ?></strong><br>
                                 <small class="text-muted">
-                                    <i class="fas fa-phone"></i> <?php echo $ordem->cliente_telefone; ?>
+                                    <i class="fas fa-phone"></i> <?php echo $ordem['cliente_telefone']; ?>
                                 </small>
                             </div>
                         </td>
                         <td>
                             <div>
-                                <strong><?php echo ucfirst($ordem->dispositivo_tipo); ?></strong><br>
+                                <strong><?php echo ucfirst($ordem['dispositivo_tipo']); ?></strong><br>
                                 <small class="text-muted">
-                                    <?php echo $ordem->dispositivo_marca; ?> 
-                                    <?php echo $ordem->dispositivo_modelo; ?>
-                                    <?php if (!empty($ordem->dispositivo_serial_number)): ?>
-                                        <br><i class="fas fa-barcode"></i> SN: <?php echo $ordem->dispositivo_serial_number; ?>
+                                    <?php echo $ordem['dispositivo_marca']; ?> 
+                                    <?php echo $ordem['dispositivo_modelo']; ?>
+                                    <?php if (!empty($ordem['dispositivo_serial_number'])): ?>
+                                        <br><i class="fas fa-barcode"></i> SN: <?php echo $ordem['dispositivo_serial_number']; ?>
                                     <?php endif; ?>
-                                    <?php if (!empty($ordem->dispositivo_imei)): ?>
-                                        <br><i class="fas fa-mobile-alt"></i> IMEI: <?php echo $ordem->dispositivo_imei; ?>
+                                    <?php if (!empty($ordem['dispositivo_imei'])): ?>
+                                        <br><i class="fas fa-mobile-alt"></i> IMEI: <?php echo $ordem['dispositivo_imei']; ?>
                                     <?php endif; ?>
                                 </small>
                             </div>
                         </td>
                         <td>
-                            <span title="<?php echo $ordem->problema_relatado; ?>">
-                                <?php echo truncarTexto($ordem->problema_relatado, 40); ?>
+                            <span title="<?php echo $ordem['problema_relatado']; ?>">
+                                <?php echo truncarTexto($ordem['problema_relatado'], 40); ?>
                             </span>
                         </td>
-                        <td><?php echo statusBadge($ordem->status); ?></td>
-                        <td><?php echo prioridadeBadge($ordem->prioridade); ?></td>
+                        <td><?php echo statusBadge($ordem['status']); ?></td>
+                        <td><?php echo prioridadeBadge($ordem['prioridade']); ?></td>
                         <td>
-                            <?php if ($ordem->valor_final > 0): ?>
-                                <?php echo formatarValor($ordem->valor_final); ?>
-                            <?php elseif ($ordem->valor_estimado > 0): ?>
-                                <small class="text-muted">Est: <?php echo formatarValor($ordem->valor_estimado); ?></small>
+                            <?php if ($ordem['valor_final'] > 0): ?>
+                                <?php echo formatarValor($ordem['valor_final']); ?>
+                            <?php elseif ($ordem['valor_estimado'] > 0): ?>
+                                <small class="text-muted">Est: <?php echo formatarValor($ordem['valor_estimado']); ?></small>
                             <?php else: ?>
                                 <span class="text-muted">-</span>
                             <?php endif; ?>
                         </td>
                         <td>
                             <small>
-                                <?php echo formatarData($ordem->criado_em); ?><br>
-                                <span class="text-muted">por <?php echo $ordem->usuario_nome; ?></span>
+                                <?php echo formatarData($ordem['criado_em']); ?><br>
+                                <span class="text-muted">por <?php echo $ordem['usuario_nome']; ?></span>
                             </small>
                         </td>
                         <td>
                             <div class="btn-group" role="group">
-                                <a href="<?php echo URLROOT; ?>/ordem-servico/visualizar/<?php echo $ordem->id; ?>" 
+                                <a href="<?php echo URLROOT; ?>/ordem-servico/visualizar/<?php echo $ordem['id']; ?>" 
                                    class="btn btn-sm btn-outline-primary" title="Ver detalhes">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="<?php echo URLROOT; ?>/ordem-servico/editar/<?php echo $ordem->id; ?>" 
+                                <a href="<?php echo URLROOT; ?>/ordem-servico/editar/<?php echo $ordem['id']; ?>" 
                                    class="btn btn-sm btn-outline-warning" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <?php if (isset($_SESSION['user_type']) && $_SESSION['user_type'] == 'admin'): ?>
-                                <form method="POST" action="<?php echo URLROOT; ?>/ordem-servico/deletar/<?php echo $ordem->id; ?>" class="d-inline">
+                                <form method="POST" action="<?php echo URLROOT; ?>/ordem-servico/deletar/<?php echo $ordem['id']; ?>" class="d-inline">
                                     <button type="submit" class="btn btn-sm btn-outline-danger btn-delete" title="Excluir">
                                         <i class="fas fa-trash"></i>
                                     </button>

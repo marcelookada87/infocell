@@ -2,14 +2,18 @@
 // Definir o diretório raiz da aplicação
 define('APPROOT', dirname(dirname(__FILE__)));
 
-// Carregar arquivo de configuração
+// Carregar arquivo de configuração PRIMEIRO (para ter as constantes DB)
 require_once APPROOT . '/config/config.php';
+
+// Carregar PDO personalizado DEPOIS das constantes
+require_once APPROOT . '/core/PDOclass.php';
 
 // Carregar helpers
 require_once APPROOT . '/app/helpers/url_helper.php';
 require_once APPROOT . '/app/helpers/session_helper.php';
 require_once APPROOT . '/app/helpers/cookie_helper.php';
 require_once APPROOT . '/app/helpers/sanitize_helper.php';
+require_once APPROOT . '/app/helpers/ordem_servico_helper.php';
 
 // Autoload das classes core (não controllers)
 spl_autoload_register(function($className) {

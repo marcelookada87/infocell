@@ -2,30 +2,26 @@
 
 class User
 {
-    private $db;
-    
     public function __construct()
     {
-        $this->db = new Database;
+        // Não precisa mais instanciar Database, as funções PDO são estáticas
     }
     
     // Registrar usuário
     public function register($data)
     {
-        $this->db->query('INSERT INTO usuarios (nome, email, senha, tipo) VALUES(:nome, :email, :senha, :tipo)');
+        $sql = 'INSERT INTO usuarios (nome, email, senha, tipo) VALUES(:nome, :email, :senha, :tipo)';
         
-        // Bind valores
-        $this->db->bind(':nome', $data['nome']);
-        $this->db->bind(':email', $data['email']);
-        $this->db->bind(':senha', $data['senha']);
-        $this->db->bind(':tipo', $data['tipo']);
+        $params = [
+            ':nome' => $data['nome'],
+            ':email' => $data['email'],
+            ':senha' => $data['senha'],
+            ':tipo' => $data['tipo']
+        ];
         
-        // Executar
-        if ($this->db->execute()) {
-            return true;
-        } else {
-            return false;
-        }
+        $result = pdo_query($sql, $params);
+        
+        return $result !== false;
     }
     
     // Login do usuário
@@ -34,24 +30,25 @@ class User
         try {
             error_log("Attempting login for email: " . $email);
             
-            $this->db->query('SELECT * FROM usuarios WHERE email = :email AND ativo = 1');
-            $this->db->bind(':email', $email);
+            $sql = 'SELECT * FROM usuarios WHERE email = :email AND ativo = 1';
+            $params = [':email' => $email];
             
-            $row = $this->db->single();
+            $result = pdo_query($sql, $params);
+            $row = pdo_fetch_item($result);
             
             if ($row) {
                 error_log("User found in database: " . $email);
-                $hashed_password = $row->senha;
+                $hashed_password = $row['senha'];
                 
                 if (password_verify($password, $hashed_password)) {
                     error_log("Password verified successfully for: " . $email);
                     
                     // Gerar novo hash de autenticação
-                    $authHash = $this->generateAndStoreAuthHash($row->id, $email);
+                    $authHash = $this->generateAndStoreAuthHash($row['id'], $email);
                     
                     if ($authHash) {
-                        $row->auth_hash = $authHash;
-                        return $row;
+                        $row['auth_hash'] = $authHash;
+                        return (object) $row; // Converter para objeto para manter compatibilidade
                     } else {
                         error_log("Failed to generate auth hash for user: " . $email);
                         return false;
@@ -76,11 +73,15 @@ class User
         try {
             $authHash = generateAuthHash($userId, $email);
             
-            $this->db->query('UPDATE usuarios SET auth_hash = :auth_hash, ultimo_login = NOW() WHERE id = :id');
-            $this->db->bind(':auth_hash', $authHash);
-            $this->db->bind(':id', $userId);
+            $sql = 'UPDATE usuarios SET auth_hash = :auth_hash, ultimo_login = NOW() WHERE id = :id';
+            $params = [
+                ':auth_hash' => $authHash,
+                ':id' => $userId
+            ];
             
-            if ($this->db->execute()) {
+            $result = pdo_query($sql, $params);
+            
+            if ($result !== false) {
                 error_log("Auth hash stored successfully for user ID: " . $userId);
                 return $authHash;
             } else {
@@ -97,15 +98,18 @@ class User
     public function validateAuthHash($userId, $authHash)
     {
         try {
-            $this->db->query('SELECT id, nome, email, tipo, ativo FROM usuarios WHERE id = :id AND auth_hash = :auth_hash AND ativo = 1');
-            $this->db->bind(':id', $userId);
-            $this->db->bind(':auth_hash', $authHash);
+            $sql = 'SELECT id, nome, email, tipo, ativo FROM usuarios WHERE id = :id AND auth_hash = :auth_hash AND ativo = 1';
+            $params = [
+                ':id' => $userId,
+                ':auth_hash' => $authHash
+            ];
             
-            $row = $this->db->single();
+            $result = pdo_query($sql, $params);
+            $row = pdo_fetch_item($result);
             
-            if ($row && $this->db->rowCount() > 0) {
+            if ($row) {
                 error_log("Auth hash validated successfully for user ID: " . $userId);
-                return $row;
+                return (object) $row; // Converter para objeto para manter compatibilidade
             } else {
                 error_log("Invalid auth hash for user ID: " . $userId);
                 return false;
@@ -120,10 +124,12 @@ class User
     public function invalidateAuthHash($userId)
     {
         try {
-            $this->db->query('UPDATE usuarios SET auth_hash = NULL WHERE id = :id');
-            $this->db->bind(':id', $userId);
+            $sql = 'UPDATE usuarios SET auth_hash = NULL WHERE id = :id';
+            $params = [':id' => $userId];
             
-            if ($this->db->execute()) {
+            $result = pdo_query($sql, $params);
+            
+            if ($result !== false) {
                 error_log("Auth hash invalidated successfully for user ID: " . $userId);
                 return true;
             } else {
@@ -182,15 +188,13 @@ class User
         try {
             error_log("Searching for user with email: " . $email);
             
-            $this->db->query('SELECT * FROM usuarios WHERE email = :email AND ativo = 1');
+            $sql = 'SELECT * FROM usuarios WHERE email = :email AND ativo = 1';
+            $params = [':email' => $email];
             
-            // Bind valor
-            $this->db->bind(':email', $email);
+            $result = pdo_query($sql, $params);
+            $row = pdo_fetch_item($result);
             
-            $row = $this->db->single();
-            
-            // Verificar linha
-            if ($this->db->rowCount() > 0) {
+            if ($row) {
                 error_log("User found with email: " . $email);
                 return true;
             } else {
@@ -206,53 +210,53 @@ class User
     // Buscar usuário por ID
     public function getUserById($id)
     {
-        $this->db->query('SELECT * FROM usuarios WHERE id = :id AND ativo = 1');
-        $this->db->bind(':id', $id);
+        $sql = 'SELECT * FROM usuarios WHERE id = :id AND ativo = 1';
+        $params = [':id' => $id];
         
-        $row = $this->db->single();
+        $result = pdo_query($sql, $params);
         
-        return $row;
+        return pdo_fetch_item($result);
     }
     
     // Atualizar perfil do usuário
     public function updateProfile($data)
     {
-        $this->db->query('UPDATE usuarios SET nome = :nome, email = :email WHERE id = :id');
+        $sql = 'UPDATE usuarios SET nome = :nome, email = :email WHERE id = :id';
         
-        $this->db->bind(':id', $data['id']);
-        $this->db->bind(':nome', $data['nome']);
-        $this->db->bind(':email', $data['email']);
+        $params = [
+            ':id' => $data['id'],
+            ':nome' => $data['nome'],
+            ':email' => $data['email']
+        ];
         
-        if ($this->db->execute()) {
-            return true;
-        } else {
-            return false;
-        }
+        $result = pdo_query($sql, $params);
+        
+        return $result !== false;
     }
     
     // Alterar senha
     public function changePassword($data)
     {
-        $this->db->query('UPDATE usuarios SET senha = :senha WHERE id = :id');
+        $sql = 'UPDATE usuarios SET senha = :senha WHERE id = :id';
         
-        $this->db->bind(':id', $data['id']);
-        $this->db->bind(':senha', $data['senha']);
+        $params = [
+            ':id' => $data['id'],
+            ':senha' => $data['senha']
+        ];
         
-        if ($this->db->execute()) {
-            return true;
-        } else {
-            return false;
-        }
+        $result = pdo_query($sql, $params);
+        
+        return $result !== false;
     }
     
     // Listar todos os usuários (admin)
     public function getUsers()
     {
-        $this->db->query('SELECT id, nome, email, tipo, criado_em FROM usuarios WHERE ativo = 1 ORDER BY criado_em DESC');
+        $sql = 'SELECT id, nome, email, tipo, criado_em FROM usuarios WHERE ativo = 1 ORDER BY criado_em DESC';
         
-        $results = $this->db->resultSet();
+        $result = pdo_query($sql);
         
-        return $results;
+        return pdo_fetch_array($result);
     }
 }
 

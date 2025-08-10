@@ -80,47 +80,47 @@
                                     <i class="fas fa-user"></i>
                                 </div>
                                 <div>
-                                    <strong><?php echo htmlspecialchars($cliente->nome); ?></strong>
-                                    <?php if (!empty($cliente->email)): ?>
+                                    <strong><?php echo htmlspecialchars($cliente['nome']); ?></strong>
+                                    <?php if (!empty($cliente['email'])): ?>
                                     <br><small class="text-muted">
-                                        <i class="fas fa-envelope"></i> <?php echo htmlspecialchars($cliente->email); ?>
+                                        <i class="fas fa-envelope"></i> <?php echo htmlspecialchars($cliente['email']); ?>
                                     </small>
                                     <?php endif; ?>
                                 </div>
                             </div>
                         </td>
                         <td>
-                            <a href="tel:<?php echo $cliente->telefone; ?>" class="text-decoration-none">
-                                <i class="fas fa-phone text-primary"></i> <?php echo $cliente->telefone; ?>
+                            <a href="tel:<?php echo $cliente['telefone']; ?>" class="text-decoration-none">
+                                <i class="fas fa-phone text-primary"></i> <?php echo $cliente['telefone']; ?>
                             </a>
                         </td>
                         <td>
-                            <?php echo !empty($cliente->cpf) ? $cliente->cpf : '<span class="text-muted">-</span>'; ?>
+                            <?php echo !empty($cliente['cpf']) ? $cliente['cpf'] : '<span class="text-muted">-</span>'; ?>
                         </td>
                         <td>
-                            <?php echo !empty($cliente->cidade) ? $cliente->cidade : '<span class="text-muted">-</span>'; ?>
+                            <?php echo !empty($cliente['cidade']) ? $cliente['cidade'] : '<span class="text-muted">-</span>'; ?>
                         </td>
                         <td>
-                            <small class="text-muted">
-                                <?php echo formatarData($cliente->criado_em); ?>
-                            </small>
+                                                            <small class="text-muted">
+                                    <?php echo formatarData($cliente['criado_em']); ?>
+                                </small>
                         </td>
                         <td>
                             <div class="btn-group" role="group">
-                                <a href="<?php echo URLROOT; ?>/cliente/visualizar/<?php echo $cliente->id; ?>" 
+                                <a href="<?php echo URLROOT; ?>/cliente/visualizar/<?php echo $cliente['id']; ?>" 
                                    class="btn btn-sm btn-outline-primary" title="Ver detalhes">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="<?php echo URLROOT; ?>/cliente/editar/<?php echo $cliente->id; ?>" 
+                                <a href="<?php echo URLROOT; ?>/cliente/editar/<?php echo $cliente['id']; ?>" 
                                    class="btn btn-sm btn-outline-warning" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a href="<?php echo URLROOT; ?>/ordem-servico/criar?cliente_id=<?php echo $cliente->id; ?>" 
+                                <a href="<?php echo URLROOT; ?>/ordem-servico/criar?cliente_id=<?php echo $cliente['id']; ?>" 
                                    class="btn btn-sm btn-outline-success" title="Nova OS">
                                     <i class="fas fa-plus"></i>
                                 </a>
                                 <?php if (isset($_SESSION['user_type']) && $_SESSION['user_type'] == 'admin'): ?>
-                                <form method="POST" action="<?php echo URLROOT; ?>/cliente/deletar/<?php echo $cliente->id; ?>" class="d-inline">
+                                <form method="POST" action="<?php echo URLROOT; ?>/cliente/deletar/<?php echo $cliente['id']; ?>" class="d-inline">
                                     <button type="submit" class="btn btn-sm btn-outline-danger btn-delete" title="Excluir">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -193,7 +193,7 @@
                             <?php 
                             $comEmail = 0;
                             foreach ($data['clientes'] as $cliente) {
-                                if (!empty($cliente->email)) $comEmail++;
+                                if (!empty($cliente['email'])) $comEmail++;
                             }
                             echo $comEmail;
                             ?>
@@ -218,7 +218,8 @@
                             $hoje = 0;
                             $dataHoje = date('Y-m-d');
                             foreach ($data['clientes'] as $cliente) {
-                                if (date('Y-m-d', strtotime($cliente->criado_em)) == $dataHoje) $hoje++;
+                                $criadoEm = isset($cliente['criado_em']) ? $cliente['criado_em'] : null;
+                                if ($criadoEm && date('Y-m-d', strtotime($criadoEm)) == $dataHoje) $hoje++;
                             }
                             echo $hoje;
                             ?>

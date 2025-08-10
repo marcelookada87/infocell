@@ -6,10 +6,10 @@
     </h1>
     <div class="btn-toolbar mb-2 mb-md-0">
         <div class="btn-group me-2">
-            <a href="<?php echo URLROOT; ?>/cliente/editar/<?php echo $data['cliente']->id; ?>" class="btn btn-sm btn-warning">
+                            <a href="<?php echo URLROOT; ?>/cliente/editar/<?php echo $data['cliente']['id']; ?>" class="btn btn-sm btn-warning">
                 <i class="fas fa-edit"></i> Editar
             </a>
-            <a href="<?php echo URLROOT; ?>/ordem-servico/criar?cliente_id=<?php echo $data['cliente']->id; ?>" class="btn btn-sm btn-success">
+                            <a href="<?php echo URLROOT; ?>/ordem-servico/criar?cliente_id=<?php echo $data['cliente']['id']; ?>" class="btn btn-sm btn-success">
                 <i class="fas fa-plus"></i> Nova OS
             </a>
             <a href="<?php echo URLROOT; ?>/cliente" class="btn btn-sm btn-outline-secondary">
@@ -34,7 +34,7 @@
                         <strong>Nome Completo:</strong>
                     </div>
                     <div class="col-md-9">
-                        <span class="h5"><?php echo htmlspecialchars($data['cliente']->nome); ?></span>
+                        <span class="h5"><?php echo htmlspecialchars($data['cliente']['nome']); ?></span>
                     </div>
                 </div>
                 
@@ -43,7 +43,7 @@
                         <strong>CPF:</strong>
                     </div>
                     <div class="col-md-9">
-                        <?php echo !empty($data['cliente']->cpf) ? $data['cliente']->cpf : '<span class="text-muted">Não informado</span>'; ?>
+                        <?php echo !empty($data['cliente']['cpf']) ? $data['cliente']['cpf'] : '<span class="text-muted">Não informado</span>'; ?>
                     </div>
                 </div>
                 
@@ -52,20 +52,20 @@
                         <strong>Telefone:</strong>
                     </div>
                     <div class="col-md-9">
-                        <a href="tel:<?php echo $data['cliente']->telefone; ?>" class="text-decoration-none">
-                            <i class="fas fa-phone text-primary"></i> <?php echo $data['cliente']->telefone; ?>
+                        <a href="tel:<?php echo $data['cliente']['telefone']; ?>" class="text-decoration-none">
+                            <i class="fas fa-phone text-primary"></i> <?php echo $data['cliente']['telefone']; ?>
                         </a>
                     </div>
                 </div>
                 
-                <?php if (!empty($data['cliente']->email)): ?>
+                <?php if (!empty($data['cliente']['email'])): ?>
                 <div class="row mb-3">
                     <div class="col-md-3">
                         <strong>Email:</strong>
                     </div>
                     <div class="col-md-9">
-                        <a href="mailto:<?php echo $data['cliente']->email; ?>" class="text-decoration-none">
-                            <i class="fas fa-envelope text-primary"></i> <?php echo $data['cliente']->email; ?>
+                        <a href="mailto:<?php echo $data['cliente']['email']; ?>" class="text-decoration-none">
+                            <i class="fas fa-envelope text-primary"></i> <?php echo $data['cliente']['email']; ?>
                         </a>
                     </div>
                 </div>
@@ -76,17 +76,17 @@
                         <strong>Data de Cadastro:</strong>
                     </div>
                     <div class="col-md-9">
-                        <?php echo formatarDataHora($data['cliente']->criado_em); ?>
+                        <?php echo formatarDataHora($data['cliente']['criado_em']); ?>
                     </div>
                 </div>
                 
-                <?php if ($data['cliente']->atualizado_em != $data['cliente']->criado_em): ?>
+                <?php if ($data['cliente']['atualizado_em'] != $data['cliente']['criado_em']): ?>
                 <div class="row mb-3">
                     <div class="col-md-3">
                         <strong>Última Atualização:</strong>
                     </div>
                     <div class="col-md-9">
-                        <?php echo formatarDataHora($data['cliente']->atualizado_em); ?>
+                        <?php echo formatarDataHora($data['cliente']['atualizado_em']); ?>
                     </div>
                 </div>
                 <?php endif; ?>
@@ -94,7 +94,7 @@
         </div>
         
         <!-- Endereço -->
-        <?php if (!empty($data['cliente']->endereco) || !empty($data['cliente']->cidade) || !empty($data['cliente']->cep)): ?>
+        <?php if (!empty($data['cliente']['endereco']) || !empty($data['cliente']['cidade']) || !empty($data['cliente']['cep'])): ?>
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">
@@ -102,35 +102,35 @@
                 </h6>
             </div>
             <div class="card-body">
-                <?php if (!empty($data['cliente']->endereco)): ?>
+                <?php if (!empty($data['cliente']['endereco'])): ?>
                 <div class="row mb-3">
                     <div class="col-md-3">
                         <strong>Endereço:</strong>
                     </div>
                     <div class="col-md-9">
-                        <?php echo htmlspecialchars($data['cliente']->endereco); ?>
+                        <?php echo htmlspecialchars($data['cliente']['endereco']); ?>
                     </div>
                 </div>
                 <?php endif; ?>
                 
-                <?php if (!empty($data['cliente']->cidade)): ?>
+                <?php if (!empty($data['cliente']['cidade'])): ?>
                 <div class="row mb-3">
                     <div class="col-md-3">
                         <strong>Cidade:</strong>
                     </div>
                     <div class="col-md-9">
-                        <?php echo htmlspecialchars($data['cliente']->cidade); ?>
+                        <?php echo htmlspecialchars($data['cliente']['cidade']); ?>
                     </div>
                 </div>
                 <?php endif; ?>
                 
-                <?php if (!empty($data['cliente']->cep)): ?>
+                <?php if (!empty($data['cliente']['cep'])): ?>
                 <div class="row mb-3">
                     <div class="col-md-3">
                         <strong>CEP:</strong>
                     </div>
                     <div class="col-md-9">
-                        <?php echo $data['cliente']->cep; ?>
+                        <?php echo $data['cliente']['cep']; ?>
                     </div>
                 </div>
                 <?php endif; ?>
@@ -144,7 +144,7 @@
                 <h6 class="m-0 font-weight-bold text-primary">
                     <i class="fas fa-clipboard-list"></i> Histórico de Ordens de Serviço
                 </h6>
-                <a href="<?php echo URLROOT; ?>/ordem-servico/criar?cliente_id=<?php echo $data['cliente']->id; ?>" class="btn btn-sm btn-success">
+                <a href="<?php echo URLROOT; ?>/ordem-servico/criar?cliente_id=<?php echo $data['cliente']['id']; ?>" class="btn btn-sm btn-success">
                     <i class="fas fa-plus"></i> Nova OS
                 </a>
             </div>
@@ -209,7 +209,7 @@
                 <div class="text-center py-4">
                     <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
                     <p class="text-muted">Nenhuma ordem de serviço encontrada para este cliente.</p>
-                    <a href="<?php echo URLROOT; ?>/ordem-servico/criar?cliente_id=<?php echo $data['cliente']->id; ?>" class="btn btn-primary">
+                    <a href="<?php echo URLROOT; ?>/ordem-servico/criar?cliente_id=<?php echo $data['cliente']['id']; ?>" class="btn btn-primary">
                         <i class="fas fa-plus"></i> Criar primeira OS
                     </a>
                 </div>
@@ -226,21 +226,21 @@
                 <div class="mb-3">
                     <i class="fas fa-user-circle fa-5x text-muted"></i>
                 </div>
-                <h5 class="card-title"><?php echo htmlspecialchars($data['cliente']->nome); ?></h5>
-                <p class="card-text text-muted">Cliente desde <?php echo formatarData($data['cliente']->criado_em); ?></p>
+                <h5 class="card-title"><?php echo htmlspecialchars($data['cliente']['nome']); ?></h5>
+                <p class="card-text text-muted">Cliente desde <?php echo formatarData($data['cliente']['criado_em']); ?></p>
                 
                 <div class="d-grid gap-2">
-                    <a href="<?php echo URLROOT; ?>/cliente/editar/<?php echo $data['cliente']->id; ?>" 
+                    <a href="<?php echo URLROOT; ?>/cliente/editar/<?php echo $data['cliente']['id']; ?>" 
                        class="btn btn-warning">
                         <i class="fas fa-edit"></i> Editar Cliente
                     </a>
                     
-                    <a href="<?php echo URLROOT; ?>/ordem-servico/criar?cliente_id=<?php echo $data['cliente']->id; ?>" 
+                    <a href="<?php echo URLROOT; ?>/ordem-servico/criar?cliente_id=<?php echo $data['cliente']['id']; ?>" 
                        class="btn btn-success">
                         <i class="fas fa-plus"></i> Nova OS
                     </a>
                     
-                    <a href="tel:<?php echo $data['cliente']->telefone; ?>" class="btn btn-outline-primary">
+                                            <a href="tel:<?php echo $data['cliente']['telefone']; ?>" class="btn btn-outline-primary">
                         <i class="fas fa-phone"></i> Ligar
                     </a>
                     
@@ -251,7 +251,7 @@
                     <?php endif; ?>
                     
                     <?php if (isset($_SESSION['user_type']) && $_SESSION['user_type'] == 'admin'): ?>
-                    <form method="POST" action="<?php echo URLROOT; ?>/cliente/deletar/<?php echo $data['cliente']->id; ?>" class="d-inline">
+                    <form method="POST" action="<?php echo URLROOT; ?>/cliente/deletar/<?php echo $data['cliente']['id']; ?>" class="d-inline">
                         <button type="submit" class="btn btn-outline-danger btn-delete w-100">
                             <i class="fas fa-trash"></i> Excluir Cliente
                         </button>

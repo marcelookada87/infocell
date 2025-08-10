@@ -124,5 +124,8 @@ function prioridadeBadge($prioridade)
 // Gerar número da OS
 function gerarNumeroOS($id)
 {
-    return str_pad($id, 6, '0', STR_PAD_LEFT);
+    if (is_null($id)) {
+        $id = '';
+    }
+    return str_pad((string)$id, 6, '0', STR_PAD_LEFT);
 }

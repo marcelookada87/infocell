@@ -2,79 +2,79 @@
 
 class Dispositivo
 {
-    private $db;
-    
     public function __construct()
     {
-        $this->db = new Database;
+        // Não precisa mais instanciar Database, as funções PDO são estáticas
     }
     
     // Buscar dispositivos mais reparados
     public function getDispositivosMaisReparados($limit = 10)
     {
-        $this->db->query('SELECT dispositivo_tipo, dispositivo_marca, dispositivo_modelo, COUNT(*) as total_reparos
-                         FROM ordens_servico 
-                         GROUP BY dispositivo_tipo, dispositivo_marca, dispositivo_modelo 
-                         ORDER BY total_reparos DESC 
-                         LIMIT :limit');
-        $this->db->bind(':limit', $limit);
+        $sql = 'SELECT dispositivo_tipo, dispositivo_marca, dispositivo_modelo, COUNT(*) as total_reparos
+                FROM ordens_servico 
+                GROUP BY dispositivo_tipo, dispositivo_marca, dispositivo_modelo 
+                ORDER BY total_reparos DESC 
+                LIMIT :limit';
+        $params = [':limit' => $limit];
         
-        $results = $this->db->resultSet();
+        $result = pdo_query($sql, $params);
         
-        return $results;
+        return pdo_fetch_array($result);
     }
     
     // Buscar tipos de dispositivos únicos
     public function getTiposDispositivos()
     {
-        $this->db->query('SELECT DISTINCT dispositivo_tipo FROM ordens_servico ORDER BY dispositivo_tipo');
+        $sql = 'SELECT DISTINCT dispositivo_tipo FROM ordens_servico ORDER BY dispositivo_tipo';
         
-        $results = $this->db->resultSet();
+        $result = pdo_query($sql);
         
-        return $results;
+        return pdo_fetch_array($result);
     }
     
     // Buscar marcas por tipo
     public function getMarcasPorTipo($tipo)
     {
-        $this->db->query('SELECT DISTINCT dispositivo_marca FROM ordens_servico 
-                         WHERE dispositivo_tipo = :tipo 
-                         ORDER BY dispositivo_marca');
-        $this->db->bind(':tipo', $tipo);
+        $sql = 'SELECT DISTINCT dispositivo_marca FROM ordens_servico 
+                WHERE dispositivo_tipo = :tipo 
+                ORDER BY dispositivo_marca';
+        $params = [':tipo' => $tipo];
         
-        $results = $this->db->resultSet();
+        $result = pdo_query($sql, $params);
         
-        return $results;
+        return pdo_fetch_array($result);
     }
     
     // Buscar modelos por marca e tipo
     public function getModelosPorMarcaTipo($tipo, $marca)
     {
-        $this->db->query('SELECT DISTINCT dispositivo_modelo FROM ordens_servico 
-                         WHERE dispositivo_tipo = :tipo AND dispositivo_marca = :marca
-                         ORDER BY dispositivo_modelo');
-        $this->db->bind(':tipo', $tipo);
-        $this->db->bind(':marca', $marca);
+        $sql = 'SELECT DISTINCT dispositivo_modelo FROM ordens_servico 
+                WHERE dispositivo_tipo = :tipo AND dispositivo_marca = :marca
+                ORDER BY dispositivo_modelo';
+        $params = [
+            ':tipo' => $tipo,
+            ':marca' => $marca
+        ];
         
-        $results = $this->db->resultSet();
+        $result = pdo_query($sql, $params);
         
-        return $results;
+        return pdo_fetch_array($result);
     }
     
     // Estatísticas por tipo de dispositivo
     public function getEstatisticasPorTipo()
     {
-        $this->db->query('SELECT dispositivo_tipo, 
-                         COUNT(*) as total_ordens,
-                         SUM(CASE WHEN status = "concluida" THEN 1 ELSE 0 END) as concluidas,
-                         AVG(CASE WHEN valor_final > 0 THEN valor_final ELSE NULL END) as ticket_medio
-                         FROM ordens_servico 
-                         GROUP BY dispositivo_tipo 
-                         ORDER BY total_ordens DESC');
+        $sql = 'SELECT dispositivo_tipo, 
+                COUNT(*) as total_ordens,
+                SUM(CASE WHEN status = "concluida" THEN 1 ELSE 0 END) as concluidas,
+                AVG(CASE WHEN valor_final > 0 THEN valor_final ELSE NULL END) as ticket_medio
+                FROM ordens_servico 
+                GROUP BY dispositivo_tipo 
+                ORDER BY total_ordens DESC';
         
-        $results = $this->db->resultSet();
+        $result = pdo_query($sql);
         
-        return $results;
+        return pdo_fetch_array($result);
     }
     
     // Problemas mais comuns por tipo de dispositivo
@@ -83,40 +83,37 @@ class Dispositivo
         $sql = 'SELECT problema_relatado, COUNT(*) as total_ocorrencias
                 FROM ordens_servico';
         
+        $params = [];
+        
         if ($tipo) {
             $sql .= ' WHERE dispositivo_tipo = :tipo';
+            $params[':tipo'] = $tipo;
         }
         
         $sql .= ' GROUP BY problema_relatado 
                   ORDER BY total_ocorrencias DESC 
                   LIMIT :limit';
         
-        $this->db->query($sql);
+        $params[':limit'] = $limit;
         
-        if ($tipo) {
-            $this->db->bind(':tipo', $tipo);
-        }
+        $result = pdo_query($sql, $params);
         
-        $this->db->bind(':limit', $limit);
-        
-        $results = $this->db->resultSet();
-        
-        return $results;
+        return pdo_fetch_array($result);
     }
     
     // Tempo médio de reparo por tipo
     public function getTempoMedioReparo()
     {
-        $this->db->query('SELECT dispositivo_tipo,
-                         AVG(DATEDIFF(atualizado_em, criado_em)) as tempo_medio_dias
-                         FROM ordens_servico 
-                         WHERE status = "concluida" AND atualizado_em IS NOT NULL
-                         GROUP BY dispositivo_tipo 
-                         ORDER BY tempo_medio_dias');
+        $sql = 'SELECT dispositivo_tipo,
+                AVG(DATEDIFF(atualizado_em, criado_em)) as tempo_medio_dias
+                FROM ordens_servico 
+                WHERE status = "concluida" AND atualizado_em IS NOT NULL
+                GROUP BY dispositivo_tipo 
+                ORDER BY tempo_medio_dias';
         
-        $results = $this->db->resultSet();
+        $result = pdo_query($sql);
         
-        return $results;
+        return pdo_fetch_array($result);
     }
 }
 

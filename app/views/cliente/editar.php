@@ -15,7 +15,7 @@
     <div class="col-md-12">
         <div class="card shadow">
             <div class="card-body">
-                <form action="<?php echo URLROOT; ?>/cliente/editar/<?php echo $data['cliente']->id; ?>" method="post" id="formCliente">
+                <form action="<?php echo URLROOT; ?>/cliente/editar/<?php echo $data['cliente']['id']; ?>" method="post" id="formCliente">
                     <div class="row">
                         <!-- Dados Pessoais -->
                         <div class="col-md-8">
@@ -28,7 +28,7 @@
                                     <label for="nome" class="form-label">Nome Completo *</label>
                                     <input type="text" name="nome" id="nome" 
                                            class="form-control <?php echo (!empty($data['nome_err'])) ? 'is-invalid' : ''; ?>" 
-                                           value="<?php echo $data['cliente']->nome ?? ''; ?>" 
+                                           value="<?php echo $data['cliente']['nome'] ?? ''; ?>" 
                                            placeholder="Digite o nome completo do cliente" required>
                                     <div class="invalid-feedback">
                                         <?php echo $data['nome_err'] ?? ''; ?>
@@ -39,7 +39,7 @@
                                     <label for="cpf" class="form-label">CPF</label>
                                     <input type="text" name="cpf" id="cpf" 
                                            class="form-control cpf <?php echo (!empty($data['cpf_err'])) ? 'is-invalid' : ''; ?>" 
-                                           value="<?php echo $data['cliente']->cpf ?? ''; ?>" 
+                                           value="<?php echo $data['cliente']['cpf'] ?? ''; ?>" 
                                            placeholder="000.000.000-00">
                                     <div class="invalid-feedback">
                                         <?php echo $data['cpf_err'] ?? ''; ?>
@@ -56,7 +56,7 @@
                                     <label for="telefone" class="form-label">Telefone *</label>
                                     <input type="text" name="telefone" id="telefone" 
                                            class="form-control telefone <?php echo (!empty($data['telefone_err'])) ? 'is-invalid' : ''; ?>" 
-                                           value="<?php echo $data['cliente']->telefone ?? ''; ?>" 
+                                           value="<?php echo $data['cliente']['telefone'] ?? ''; ?>" 
                                            placeholder="(00) 00000-0000" required>
                                     <div class="invalid-feedback">
                                         <?php echo $data['telefone_err'] ?? ''; ?>
@@ -67,7 +67,7 @@
                                     <label for="email" class="form-label">Email</label>
                                     <input type="email" name="email" id="email" 
                                            class="form-control <?php echo (!empty($data['email_err'])) ? 'is-invalid' : ''; ?>" 
-                                           value="<?php echo $data['cliente']->email ?? ''; ?>" 
+                                           value="<?php echo $data['cliente']['email'] ?? ''; ?>" 
                                            placeholder="email@exemplo.com">
                                     <div class="invalid-feedback">
                                         <?php echo $data['email_err'] ?? ''; ?>
@@ -84,7 +84,7 @@
                                     <label for="cep" class="form-label">CEP</label>
                                     <input type="text" name="cep" id="cep" 
                                            class="form-control cep" 
-                                           value="<?php echo $data['cliente']->cep ?? ''; ?>" 
+                                           value="<?php echo $data['cliente']['cep'] ?? ''; ?> 
                                            placeholder="00000-000">
                                     <small class="form-text text-muted">
                                         <i class="fas fa-info-circle"></i> Preenchimento automático
@@ -95,7 +95,7 @@
                                     <label for="endereco" class="form-label">Endereço</label>
                                     <input type="text" name="endereco" id="endereco" 
                                            class="form-control" 
-                                           value="<?php echo $data['cliente']->endereco ?? ''; ?>" 
+                                           value="<?php echo $data['cliente']['endereco'] ?? ''; ?>" 
                                            placeholder="Rua, Avenida, etc.">
                                 </div>
                                 
@@ -103,7 +103,7 @@
                                     <label for="cidade" class="form-label">Cidade</label>
                                     <input type="text" name="cidade" id="cidade" 
                                            class="form-control" 
-                                           value="<?php echo $data['cliente']->cidade ?? ''; ?>" 
+                                           value="<?php echo $data['cliente']['cidade'] ?? ''; ?>" 
                                            placeholder="Nome da cidade">
                                 </div>
                             </div>
@@ -119,25 +119,25 @@
                                 <div class="card-body">
                                     <div class="text-center mb-3">
                                         <i class="fas fa-user-circle fa-4x text-muted"></i>
-                                        <h6 class="mt-2" id="preview-nome"><?php echo $data['cliente']->nome ?? 'Nome do Cliente'; ?></h6>
+                                        <h6 class="mt-2" id="preview-nome"><?php echo $data['cliente']['nome'] ?? 'Nome do Cliente'; ?></h6>
                                     </div>
                                     
                                     <ul class="list-unstyled">
                                         <li class="mb-2">
                                             <i class="fas fa-phone text-primary"></i>
-                                            <span id="preview-telefone"><?php echo $data['cliente']->telefone ?? 'Telefone'; ?></span>
+                                            <span id="preview-telefone"><?php echo $data['cliente']['telefone'] ?? 'Telefone'; ?></span>
                                         </li>
                                         <li class="mb-2">
                                             <i class="fas fa-envelope text-primary"></i>
-                                            <span id="preview-email"><?php echo $data['cliente']->email ?? 'Email'; ?></span>
+                                            <span id="preview-email"><?php echo $data['cliente']['email'] ?? 'Email'; ?></span>
                                         </li>
                                         <li class="mb-2">
                                             <i class="fas fa-id-card text-primary"></i>
-                                            <span id="preview-cpf"><?php echo $data['cliente']->cpf ?? 'CPF'; ?></span>
+                                            <span id="preview-cpf"><?php echo $data['cliente']['cpf'] ?? 'CPF'; ?></span>
                                         </li>
                                         <li class="mb-2">
                                             <i class="fas fa-map-marker-alt text-primary"></i>
-                                            <span id="preview-cidade"><?php echo $data['cliente']->cidade ?? 'Cidade'; ?></span>
+                                            <span id="preview-cidade"><?php echo $data['cliente']['cidade'] ?? 'Cidade'; ?></span>
                                         </li>
                                     </ul>
                                     
@@ -190,11 +190,11 @@
 $(document).ready(function() {
     // Preview em tempo real
     function updatePreview() {
-        $('#preview-nome').text($('#nome').val() || '<?php echo $data['cliente']->nome ?? 'Nome do Cliente'; ?>');
-        $('#preview-telefone').text($('#telefone').val() || '<?php echo $data['cliente']->telefone ?? 'Telefone'; ?>');
-        $('#preview-email').text($('#email').val() || '<?php echo $data['cliente']->email ?? 'Email'; ?>');
-        $('#preview-cpf').text($('#cpf').val() || '<?php echo $data['cliente']->cpf ?? 'CPF'; ?>');
-        $('#preview-cidade').text($('#cidade').val() || '<?php echo $data['cliente']->cidade ?? 'Cidade'; ?>');
+                        $('#preview-nome').text($('#nome').val() || '<?php echo $data['cliente']['nome'] ?? 'Nome do Cliente'; ?>');
+                        $('#preview-telefone').text($('#telefone').val() || '<?php echo $data['cliente']['telefone'] ?? 'Telefone'; ?>');
+                        $('#preview-email').text($('#email').val() || '<?php echo $data['cliente']['email'] ?? 'Email'; ?>');
+                        $('#preview-cpf').text($('#cpf').val() || '<?php echo $data['cliente']['cpf'] ?? 'CPF'; ?>');
+                        $('#preview-cidade').text($('#cidade').val() || '<?php echo $data['cliente']['cidade'] ?? 'Cidade'; ?>');
     }
     
     // Atualizar preview quando campos mudarem

@@ -2,202 +2,208 @@
 
 class OrdemServico
 {
-    private $db;
-    
     public function __construct()
     {
-        $this->db = new Database;
+        // Não precisa mais instanciar Database, as funções PDO são estáticas
     }
     
     // Criar ordem de serviço
     public function criarOrdem($data)
     {
-        $this->db->query('INSERT INTO ordens_servico (cliente_id, dispositivo_tipo, dispositivo_marca, 
-                         dispositivo_modelo, dispositivo_serial_number, dispositivo_imei, problema_relatado, 
-                         observacoes, valor_estimado, prioridade, status, usuario_criacao) 
-                         VALUES(:cliente_id, :dispositivo_tipo, :dispositivo_marca, :dispositivo_modelo, 
-                         :dispositivo_serial_number, :dispositivo_imei, :problema_relatado, :observacoes, 
-                         :valor_estimado, :prioridade, :status, :usuario_criacao)');
+        $sql = 'INSERT INTO ordens_servico (cliente_id, dispositivo_tipo, dispositivo_marca, 
+                dispositivo_modelo, dispositivo_serial_number, dispositivo_imei, problema_relatado, 
+                observacoes, valor_estimado, prioridade, status, usuario_criacao) 
+                VALUES(:cliente_id, :dispositivo_tipo, :dispositivo_marca, :dispositivo_modelo, 
+                :dispositivo_serial_number, :dispositivo_imei, :problema_relatado, :observacoes, 
+                :valor_estimado, :prioridade, :status, :usuario_criacao)';
         
-        $this->db->bind(':cliente_id', $data['cliente_id']);
-        $this->db->bind(':dispositivo_tipo', $data['dispositivo_tipo']);
-        $this->db->bind(':dispositivo_marca', $data['dispositivo_marca']);
-        $this->db->bind(':dispositivo_modelo', $data['dispositivo_modelo']);
-        $this->db->bind(':dispositivo_serial_number', $data['dispositivo_serial_number']);
-        $this->db->bind(':dispositivo_imei', $data['dispositivo_imei']);
-        $this->db->bind(':problema_relatado', $data['problema_relatado']);
-        $this->db->bind(':observacoes', $data['observacoes']);
-        $this->db->bind(':valor_estimado', $data['valor_estimado']);
-        $this->db->bind(':prioridade', $data['prioridade']);
-        $this->db->bind(':status', 'aberta');
-        $this->db->bind(':usuario_criacao', $_SESSION['user_id']);
+        $params = [
+            ':cliente_id' => $data['cliente_id'],
+            ':dispositivo_tipo' => $data['dispositivo_tipo'],
+            ':dispositivo_marca' => $data['dispositivo_marca'],
+            ':dispositivo_modelo' => $data['dispositivo_modelo'],
+            ':dispositivo_serial_number' => $data['dispositivo_serial_number'],
+            ':dispositivo_imei' => $data['dispositivo_imei'],
+            ':problema_relatado' => $data['problema_relatado'],
+            ':observacoes' => $data['observacoes'],
+            ':valor_estimado' => $data['valor_estimado'],
+            ':prioridade' => $data['prioridade'],
+            ':status' => 'aberta',
+            ':usuario_criacao' => $_SESSION['user_id']
+        ];
         
-        if ($this->db->execute()) {
-            return true;
-        } else {
-            return false;
-        }
+        $result = pdo_query($sql, $params);
+        
+        return $result !== false;
     }
     
     // Buscar todas as ordens
     public function getOrdens()
     {
-        $this->db->query('SELECT os.*, c.nome as cliente_nome, c.telefone as cliente_telefone,
-                         u.nome as usuario_nome
-                         FROM ordens_servico os
-                         LEFT JOIN clientes c ON os.cliente_id = c.id
-                         LEFT JOIN usuarios u ON os.usuario_criacao = u.id
-                         ORDER BY os.criado_em DESC');
+        $sql = 'SELECT os.*, c.nome as cliente_nome, c.telefone as cliente_telefone,
+                u.nome as usuario_nome
+                FROM ordens_servico os
+                LEFT JOIN clientes c ON os.cliente_id = c.id
+                LEFT JOIN usuarios u ON os.usuario_criacao = u.id
+                ORDER BY os.criado_em DESC';
         
-        $results = $this->db->resultSet();
+        $result = pdo_query($sql);
         
-        return $results;
+        return pdo_fetch_array($result);
     }
     
     // Buscar ordem por ID
     public function getOrdemById($id)
     {
-        $this->db->query('SELECT os.*, c.nome as cliente_nome, c.telefone as cliente_telefone,
-                         c.email as cliente_email, u.nome as usuario_nome
-                         FROM ordens_servico os
-                         LEFT JOIN clientes c ON os.cliente_id = c.id
-                         LEFT JOIN usuarios u ON os.usuario_criacao = u.id
-                         WHERE os.id = :id');
-        $this->db->bind(':id', $id);
+        $sql = 'SELECT os.*, c.nome as cliente_nome, c.telefone as cliente_telefone,
+                c.email as cliente_email, u.nome as usuario_nome
+                FROM ordens_servico os
+                LEFT JOIN clientes c ON os.cliente_id = c.id
+                LEFT JOIN usuarios u ON os.usuario_criacao = u.id
+                WHERE os.id = :id';
+        $params = [':id' => $id];
         
-        $row = $this->db->single();
+        $result = pdo_query($sql, $params);
         
-        return $row;
+        return pdo_fetch_item($result);
     }
     
     // Atualizar ordem
     public function atualizarOrdem($data)
     {
-        $this->db->query('UPDATE ordens_servico SET status = :status, problema_diagnosticado = :problema_diagnosticado,
-                         solucao_aplicada = :solucao_aplicada, valor_final = :valor_final, 
-                         observacoes_tecnico = :observacoes_tecnico, atualizado_em = NOW()
-                         WHERE id = :id');
+        $sql = 'UPDATE ordens_servico SET status = :status, problema_diagnosticado = :problema_diagnosticado,
+                solucao_aplicada = :solucao_aplicada, valor_final = :valor_final, 
+                observacoes_tecnico = :observacoes_tecnico, atualizado_em = NOW()
+                WHERE id = :id';
         
-        $this->db->bind(':id', $data['id']);
-        $this->db->bind(':status', $data['status']);
-        $this->db->bind(':problema_diagnosticado', $data['problema_diagnosticado']);
-        $this->db->bind(':solucao_aplicada', $data['solucao_aplicada']);
-        $this->db->bind(':valor_final', $data['valor_final']);
-        $this->db->bind(':observacoes_tecnico', $data['observacoes_tecnico']);
+        $params = [
+            ':id' => $data['id'],
+            ':status' => $data['status'],
+            ':problema_diagnosticado' => $data['problema_diagnosticado'],
+            ':solucao_aplicada' => $data['solucao_aplicada'],
+            ':valor_final' => $data['valor_final'],
+            ':observacoes_tecnico' => $data['observacoes_tecnico']
+        ];
         
-        if ($this->db->execute()) {
-            return true;
-        } else {
-            return false;
-        }
+        $result = pdo_query($sql, $params);
+        
+        return $result !== false;
     }
     
     // Deletar ordem
     public function deletarOrdem($id)
     {
-        $this->db->query('DELETE FROM ordens_servico WHERE id = :id');
-        $this->db->bind(':id', $id);
+        $sql = 'DELETE FROM ordens_servico WHERE id = :id';
+        $params = [':id' => $id];
         
-        if ($this->db->execute()) {
-            return true;
-        } else {
-            return false;
-        }
+        $result = pdo_query($sql, $params);
+        
+        return $result !== false;
     }
     
     // Contar total de ordens
     public function getTotalOrdens()
     {
-        $this->db->query('SELECT COUNT(*) as total FROM ordens_servico');
+        $sql = 'SELECT COUNT(*) as total FROM ordens_servico';
         
-        $row = $this->db->single();
+        $result = pdo_query($sql);
         
-        return $row->total;
+        $row = pdo_fetch_item($result);
+        
+        return $row['total'] ?? 0;
     }
     
     // Ordens abertas
     public function getOrdensAbertas()
     {
-        $this->db->query('SELECT COUNT(*) as total FROM ordens_servico WHERE status = "aberta"');
+        $sql = 'SELECT COUNT(*) as total FROM ordens_servico WHERE status = "aberta"';
         
-        $row = $this->db->single();
+        $result = pdo_query($sql);
         
-        return $row->total;
+        $row = pdo_fetch_item($result);
+        
+        return $row['total'] ?? 0;
     }
     
     // Ordens em andamento
     public function getOrdensAndamento()
     {
-        $this->db->query('SELECT COUNT(*) as total FROM ordens_servico WHERE status = "em_andamento"');
+        $sql = 'SELECT COUNT(*) as total FROM ordens_servico WHERE status = "em_andamento"';
         
-        $row = $this->db->single();
+        $result = pdo_query($sql);
         
-        return $row->total;
+        $row = pdo_fetch_item($result);
+        
+        return $row['total'] ?? 0;
     }
     
     // Ordens concluídas
     public function getOrdensConcluidas()
     {
-        $this->db->query('SELECT COUNT(*) as total FROM ordens_servico WHERE status = "concluida"');
+        $sql = 'SELECT COUNT(*) as total FROM ordens_servico WHERE status = "concluida"';
         
-        $row = $this->db->single();
+        $result = pdo_query($sql);
         
-        return $row->total;
+        $row = pdo_fetch_item($result);
+        
+        return $row['total'] ?? 0;
     }
     
     // Ordens recentes
     public function getOrdensRecentes($limit = 10)
     {
-        $this->db->query('SELECT os.*, c.nome as cliente_nome 
-                         FROM ordens_servico os
-                         LEFT JOIN clientes c ON os.cliente_id = c.id
-                         ORDER BY os.criado_em DESC 
-                         LIMIT :limit');
-        $this->db->bind(':limit', $limit);
+        $sql = 'SELECT os.*, c.nome as cliente_nome 
+                FROM ordens_servico os
+                LEFT JOIN clientes c ON os.cliente_id = c.id
+                ORDER BY os.criado_em DESC 
+                LIMIT :limit';
+        $params = [':limit' => $limit];
         
-        $results = $this->db->resultSet();
+        $result = pdo_query($sql, $params);
         
-        return $results;
+        return pdo_fetch_array($result);
     }
     
     // Receita mensal
     public function getReceitaMensal()
     {
-        $this->db->query('SELECT SUM(valor_final) as total 
-                         FROM ordens_servico 
-                         WHERE status = "concluida" 
-                         AND MONTH(criado_em) = MONTH(CURRENT_DATE()) 
-                         AND YEAR(criado_em) = YEAR(CURRENT_DATE())');
+        $sql = 'SELECT SUM(valor_final) as total 
+                FROM ordens_servico 
+                WHERE status = "concluida" 
+                AND MONTH(criado_em) = MONTH(CURRENT_DATE()) 
+                AND YEAR(criado_em) = YEAR(CURRENT_DATE())';
         
-        $row = $this->db->single();
+        $result = pdo_query($sql);
         
-        return $row->total ? $row->total : 0;
+        $row = pdo_fetch_item($result);
+        
+        return $row['total'] ? $row['total'] : 0;
     }
     
     // Ordens por status
     public function getOrdensPorStatus()
     {
-        $this->db->query('SELECT status, COUNT(*) as total 
-                         FROM ordens_servico 
-                         GROUP BY status');
+        $sql = 'SELECT status, COUNT(*) as total 
+                FROM ordens_servico 
+                GROUP BY status';
         
-        $results = $this->db->resultSet();
+        $result = pdo_query($sql);
         
-        return $results;
+        return pdo_fetch_array($result);
     }
     
     // Ordens por mês
     public function getOrdensPorMes()
     {
-        $this->db->query('SELECT DATE_FORMAT(criado_em, "%Y-%m") as mes, COUNT(*) as total 
-                         FROM ordens_servico 
-                         WHERE criado_em >= DATE_SUB(CURRENT_DATE(), INTERVAL 12 MONTH)
-                         GROUP BY mes 
-                         ORDER BY mes');
+        $sql = 'SELECT DATE_FORMAT(criado_em, "%Y-%m") as mes, COUNT(*) as total 
+                FROM ordens_servico 
+                WHERE criado_em >= DATE_SUB(CURRENT_DATE(), INTERVAL 12 MONTH)
+                GROUP BY mes 
+                ORDER BY mes';
         
-        $results = $this->db->resultSet();
+        $result = pdo_query($sql);
         
-        return $results;
+        return pdo_fetch_array($result);
     }
     
     // Receita por mês
@@ -205,47 +211,47 @@ class OrdemServico
     {
         $ano = $ano ? $ano : date('Y');
         
-        $this->db->query('SELECT MONTH(criado_em) as mes, SUM(valor_final) as total 
-                         FROM ordens_servico 
-                         WHERE status = "concluida" 
-                         AND YEAR(criado_em) = :ano
-                         GROUP BY mes 
-                         ORDER BY mes');
-        $this->db->bind(':ano', $ano);
+        $sql = 'SELECT MONTH(criado_em) as mes, SUM(valor_final) as total 
+                FROM ordens_servico 
+                WHERE status = "concluida" 
+                AND YEAR(criado_em) = :ano
+                GROUP BY mes 
+                ORDER BY mes';
+        $params = [':ano' => $ano];
         
-        $results = $this->db->resultSet();
+        $result = pdo_query($sql, $params);
         
-        return $results;
+        return pdo_fetch_array($result);
     }
     
     // Dispositivos mais reparados
     public function getDispositivosMaisReparados($limit = 10)
     {
-        $this->db->query('SELECT dispositivo_tipo, dispositivo_marca, COUNT(*) as total 
-                         FROM ordens_servico 
-                         GROUP BY dispositivo_tipo, dispositivo_marca 
-                         ORDER BY total DESC 
-                         LIMIT :limit');
-        $this->db->bind(':limit', $limit);
+        $sql = 'SELECT dispositivo_tipo, dispositivo_marca, COUNT(*) as total 
+                FROM ordens_servico 
+                GROUP BY dispositivo_tipo, dispositivo_marca 
+                ORDER BY total DESC 
+                LIMIT :limit';
+        $params = [':limit' => $limit];
         
-        $results = $this->db->resultSet();
+        $result = pdo_query($sql, $params);
         
-        return $results;
+        return pdo_fetch_array($result);
     }
     
     // Ordens por cliente ID
     public function getOrdensByClienteId($cliente_id)
     {
-        $this->db->query('SELECT os.*, c.nome as cliente_nome 
-                         FROM ordens_servico os
-                         LEFT JOIN clientes c ON os.cliente_id = c.id
-                         WHERE os.cliente_id = :cliente_id
-                         ORDER BY os.criado_em DESC');
-        $this->db->bind(':cliente_id', $cliente_id);
+        $sql = 'SELECT os.*, c.nome as cliente_nome 
+                FROM ordens_servico os
+                LEFT JOIN clientes c ON os.cliente_id = c.id
+                WHERE os.cliente_id = :cliente_id
+                ORDER BY os.criado_em DESC';
+        $params = [':cliente_id' => $cliente_id];
         
-        $results = $this->db->resultSet();
+        $result = pdo_query($sql, $params);
         
-        return $results;
+        return pdo_fetch_array($result);
     }
     
     // Ordens com filtros
@@ -256,45 +262,33 @@ class OrdemServico
                 LEFT JOIN clientes c ON os.cliente_id = c.id
                 WHERE 1=1';
         
+        $params = [];
+        
         if (isset($filtros['data_inicio'])) {
             $sql .= ' AND DATE(os.criado_em) >= :data_inicio';
+            $params[':data_inicio'] = $filtros['data_inicio'];
         }
         
         if (isset($filtros['data_fim'])) {
             $sql .= ' AND DATE(os.criado_em) <= :data_fim';
+            $params[':data_fim'] = $filtros['data_fim'];
         }
         
         if (isset($filtros['status'])) {
             $sql .= ' AND os.status = :status';
+            $params[':status'] = $filtros['status'];
         }
         
         if (isset($filtros['dispositivo_tipo'])) {
             $sql .= ' AND os.dispositivo_tipo = :dispositivo_tipo';
+            $params[':dispositivo_tipo'] = $filtros['dispositivo_tipo'];
         }
         
         $sql .= ' ORDER BY os.criado_em DESC';
         
-        $this->db->query($sql);
+        $result = pdo_query($sql, $params);
         
-        if (isset($filtros['data_inicio'])) {
-            $this->db->bind(':data_inicio', $filtros['data_inicio']);
-        }
-        
-        if (isset($filtros['data_fim'])) {
-            $this->db->bind(':data_fim', $filtros['data_fim']);
-        }
-        
-        if (isset($filtros['status'])) {
-            $this->db->bind(':status', $filtros['status']);
-        }
-        
-        if (isset($filtros['dispositivo_tipo'])) {
-            $this->db->bind(':dispositivo_tipo', $filtros['dispositivo_tipo']);
-        }
-        
-        $results = $this->db->resultSet();
-        
-        return $results;
+        return pdo_fetch_array($result);
     }
 }
 
