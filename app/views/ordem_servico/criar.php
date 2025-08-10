@@ -92,6 +92,26 @@
                                            value="<?php echo $data['dispositivo_modelo']; ?>" placeholder="Ex: Galaxy S21, iPhone 12">
                                 </div>
                             </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="dispositivo_serial_number" class="form-label">Serial Number</label>
+                                    <input type="text" name="dispositivo_serial_number" id="dispositivo_serial_number" class="form-control" 
+                                           value="<?php echo $data['dispositivo_serial_number']; ?>" placeholder="Ex: SN123456789">
+                                    <div class="form-text">
+                                        Número de série do dispositivo (opcional)
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="dispositivo_imei" class="form-label">IMEI</label>
+                                    <input type="text" name="dispositivo_imei" id="dispositivo_imei" class="form-control" 
+                                           value="<?php echo $data['dispositivo_imei']; ?>" placeholder="Ex: 123456789012345" maxlength="15">
+                                    <div class="form-text">
+                                        IMEI do dispositivo (opcional)
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
@@ -233,6 +253,26 @@ $(document).ready(function() {
     if ($('#dispositivo_tipo').val()) {
         $('#dispositivo_tipo').trigger('change');
     }
+    
+    // Validação do campo IMEI (apenas números, máximo 15 dígitos)
+    $('#dispositivo_imei').on('input', function() {
+        let value = $(this).val();
+        // Remove caracteres não numéricos
+        value = value.replace(/\D/g, '');
+        // Limita a 15 dígitos
+        if (value.length > 15) {
+            value = value.substring(0, 15);
+        }
+        $(this).val(value);
+    });
+    
+    // Validação do campo Serial Number (remove caracteres especiais perigosos)
+    $('#dispositivo_serial_number').on('input', function() {
+        let value = $(this).val();
+        // Remove caracteres potencialmente perigosos para SQL
+        value = value.replace(/['";\\]/g, '');
+        $(this).val(value);
+    });
 });
 </script>
 

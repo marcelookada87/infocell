@@ -222,15 +222,9 @@ function getLoggedInUserEmail()
 
 /**
  * Verifica se o usuário logado é admin
- * Nota: Esta função é um wrapper para o modelo User
- * Use $userModel->isAdmin() diretamente nos controllers
+ * Nota: Esta função está definida em session_helper.php
+ * Use $userModel->isAdmin() diretamente nos controllers ou isAdmin() do session_helper
  */
-function isAdmin()
-{
-    // Para usar esta função, você precisa ter uma instância do modelo User
-    // Recomendado usar diretamente: $userModel->isAdmin()
-    return false;
-}
 
 /**
  * Força logout do usuário

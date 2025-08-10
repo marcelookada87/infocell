@@ -59,8 +59,9 @@ CREATE TABLE ordens_servico (
     dispositivo_tipo ENUM('celular', 'tablet', 'notebook', 'desktop', 'tv', 'console', 'outros') NOT NULL,
     dispositivo_marca VARCHAR(50) NOT NULL,
     dispositivo_modelo VARCHAR(100) NOT NULL,
-    dispositivo_cor VARCHAR(30),
+    dispositivo_serial_number VARCHAR(100),
     dispositivo_imei VARCHAR(20),
+    dispositivo_cor VARCHAR(30),
     dispositivo_senha VARCHAR(50),
     
     -- Problema e Diagnóstico
@@ -105,7 +106,9 @@ CREATE TABLE ordens_servico (
     INDEX idx_status (status),
     INDEX idx_dispositivo_tipo (dispositivo_tipo),
     INDEX idx_data_entrada (data_entrada),
-    INDEX idx_criado_em (criado_em)
+    INDEX idx_criado_em (criado_em),
+    INDEX idx_dispositivo_imei (dispositivo_imei),
+    INDEX idx_dispositivo_serial (dispositivo_serial_number)
 ) ENGINE=InnoDB;
 
 -- ============================================

@@ -109,33 +109,36 @@
                             <strong>Marca:</strong><br>
                             <?php echo $data['ordem']->dispositivo_marca ?: '-'; ?>
                         </div>
-                    </div>
-                    
-                    <div class="col-md-6">
+                        
                         <div class="mb-3">
                             <strong>Modelo:</strong><br>
                             <?php echo $data['ordem']->dispositivo_modelo ?: '-'; ?>
                         </div>
-                        
+                    </div>
+                    
+                    <div class="col-md-6">
                         <?php if (!empty($data['ordem']->dispositivo_cor)): ?>
                         <div class="mb-3">
                             <strong>Cor:</strong><br>
                             <?php echo $data['ordem']->dispositivo_cor; ?>
                         </div>
                         <?php endif; ?>
-                    </div>
-                </div>
-                
-                <?php if (!empty($data['ordem']->dispositivo_imei)): ?>
-                <div class="row">
-                    <div class="col-md-12">
+                        
+                        <?php if (!empty($data['ordem']->dispositivo_serial_number)): ?>
                         <div class="mb-3">
-                            <strong>IMEI/Série:</strong><br>
+                            <strong>Serial Number:</strong><br>
+                            <code><?php echo $data['ordem']->dispositivo_serial_number; ?></code>
+                        </div>
+                        <?php endif; ?>
+                        
+                        <?php if (!empty($data['ordem']->dispositivo_imei)): ?>
+                        <div class="mb-3">
+                            <strong>IMEI:</strong><br>
                             <code><?php echo $data['ordem']->dispositivo_imei; ?></code>
                         </div>
+                        <?php endif; ?>
                     </div>
                 </div>
-                <?php endif; ?>
             </div>
         </div>
         

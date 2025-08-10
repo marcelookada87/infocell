@@ -110,6 +110,12 @@
                                 <small class="text-muted">
                                     <?php echo $ordem->dispositivo_marca; ?> 
                                     <?php echo $ordem->dispositivo_modelo; ?>
+                                    <?php if (!empty($ordem->dispositivo_serial_number)): ?>
+                                        <br><i class="fas fa-barcode"></i> SN: <?php echo $ordem->dispositivo_serial_number; ?>
+                                    <?php endif; ?>
+                                    <?php if (!empty($ordem->dispositivo_imei)): ?>
+                                        <br><i class="fas fa-mobile-alt"></i> IMEI: <?php echo $ordem->dispositivo_imei; ?>
+                                    <?php endif; ?>
                                 </small>
                             </div>
                         </td>

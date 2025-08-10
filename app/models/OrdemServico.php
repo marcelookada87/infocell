@@ -13,15 +13,18 @@ class OrdemServico
     public function criarOrdem($data)
     {
         $this->db->query('INSERT INTO ordens_servico (cliente_id, dispositivo_tipo, dispositivo_marca, 
-                         dispositivo_modelo, problema_relatado, observacoes, valor_estimado, prioridade, 
-                         status, usuario_criacao) 
+                         dispositivo_modelo, dispositivo_serial_number, dispositivo_imei, problema_relatado, 
+                         observacoes, valor_estimado, prioridade, status, usuario_criacao) 
                          VALUES(:cliente_id, :dispositivo_tipo, :dispositivo_marca, :dispositivo_modelo, 
-                         :problema_relatado, :observacoes, :valor_estimado, :prioridade, :status, :usuario_criacao)');
+                         :dispositivo_serial_number, :dispositivo_imei, :problema_relatado, :observacoes, 
+                         :valor_estimado, :prioridade, :status, :usuario_criacao)');
         
         $this->db->bind(':cliente_id', $data['cliente_id']);
         $this->db->bind(':dispositivo_tipo', $data['dispositivo_tipo']);
         $this->db->bind(':dispositivo_marca', $data['dispositivo_marca']);
         $this->db->bind(':dispositivo_modelo', $data['dispositivo_modelo']);
+        $this->db->bind(':dispositivo_serial_number', $data['dispositivo_serial_number']);
+        $this->db->bind(':dispositivo_imei', $data['dispositivo_imei']);
         $this->db->bind(':problema_relatado', $data['problema_relatado']);
         $this->db->bind(':observacoes', $data['observacoes']);
         $this->db->bind(':valor_estimado', $data['valor_estimado']);
