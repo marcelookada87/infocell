@@ -2,7 +2,7 @@
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">
-        <i class="fas fa-user-plus"></i> Novo Cliente
+        <i class="fas fa-user-edit"></i> Editar Cliente
     </h1>
     <div class="btn-toolbar mb-2 mb-md-0">
         <a href="<?php echo URLROOT; ?>/cliente" class="btn btn-sm btn-outline-secondary">
@@ -15,7 +15,7 @@
     <div class="col-md-12">
         <div class="card shadow">
             <div class="card-body">
-                <form action="<?php echo URLROOT; ?>/cliente/criar" method="post" id="formCliente">
+                <form action="<?php echo URLROOT; ?>/cliente/editar/<?php echo $data['cliente']->id; ?>" method="post" id="formCliente">
                     <div class="row">
                         <!-- Dados Pessoais -->
                         <div class="col-md-8">
@@ -28,10 +28,10 @@
                                     <label for="nome" class="form-label">Nome Completo *</label>
                                     <input type="text" name="nome" id="nome" 
                                            class="form-control <?php echo (!empty($data['nome_err'])) ? 'is-invalid' : ''; ?>" 
-                                           value="<?php echo $data['nome']; ?>" 
+                                           value="<?php echo $data['cliente']->nome ?? ''; ?>" 
                                            placeholder="Digite o nome completo do cliente" required>
                                     <div class="invalid-feedback">
-                                        <?php echo $data['nome_err']; ?>
+                                        <?php echo $data['nome_err'] ?? ''; ?>
                                     </div>
                                 </div>
                                 
@@ -39,10 +39,10 @@
                                     <label for="cpf" class="form-label">CPF</label>
                                     <input type="text" name="cpf" id="cpf" 
                                            class="form-control cpf <?php echo (!empty($data['cpf_err'])) ? 'is-invalid' : ''; ?>" 
-                                           value="<?php echo $data['cpf']; ?>" 
+                                           value="<?php echo $data['cliente']->cpf ?? ''; ?>" 
                                            placeholder="000.000.000-00">
                                     <div class="invalid-feedback">
-                                        <?php echo $data['cpf_err']; ?>
+                                        <?php echo $data['cpf_err'] ?? ''; ?>
                                     </div>
                                 </div>
                             </div>
@@ -56,10 +56,10 @@
                                     <label for="telefone" class="form-label">Telefone *</label>
                                     <input type="text" name="telefone" id="telefone" 
                                            class="form-control telefone <?php echo (!empty($data['telefone_err'])) ? 'is-invalid' : ''; ?>" 
-                                           value="<?php echo $data['telefone']; ?>" 
+                                           value="<?php echo $data['cliente']->telefone ?? ''; ?>" 
                                            placeholder="(00) 00000-0000" required>
                                     <div class="invalid-feedback">
-                                        <?php echo $data['telefone_err']; ?>
+                                        <?php echo $data['telefone_err'] ?? ''; ?>
                                     </div>
                                 </div>
                                 
@@ -67,10 +67,10 @@
                                     <label for="email" class="form-label">Email</label>
                                     <input type="email" name="email" id="email" 
                                            class="form-control <?php echo (!empty($data['email_err'])) ? 'is-invalid' : ''; ?>" 
-                                           value="<?php echo $data['email']; ?>" 
+                                           value="<?php echo $data['cliente']->email ?? ''; ?>" 
                                            placeholder="email@exemplo.com">
                                     <div class="invalid-feedback">
-                                        <?php echo $data['email_err']; ?>
+                                        <?php echo $data['email_err'] ?? ''; ?>
                                     </div>
                                 </div>
                             </div>
@@ -84,7 +84,7 @@
                                     <label for="cep" class="form-label">CEP</label>
                                     <input type="text" name="cep" id="cep" 
                                            class="form-control cep" 
-                                           value="<?php echo $data['cep']; ?>" 
+                                           value="<?php echo $data['cliente']->cep ?? ''; ?>" 
                                            placeholder="00000-000">
                                     <small class="form-text text-muted">
                                         <i class="fas fa-info-circle"></i> Preenchimento automático
@@ -95,7 +95,7 @@
                                     <label for="endereco" class="form-label">Endereço</label>
                                     <input type="text" name="endereco" id="endereco" 
                                            class="form-control" 
-                                           value="<?php echo $data['endereco']; ?>" 
+                                           value="<?php echo $data['cliente']->endereco ?? ''; ?>" 
                                            placeholder="Rua, Avenida, etc.">
                                 </div>
                                 
@@ -103,13 +103,13 @@
                                     <label for="cidade" class="form-label">Cidade</label>
                                     <input type="text" name="cidade" id="cidade" 
                                            class="form-control" 
-                                           value="<?php echo $data['cidade']; ?>" 
+                                           value="<?php echo $data['cliente']->cidade ?? ''; ?>" 
                                            placeholder="Nome da cidade">
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- Sidebar com informações e preview -->
+                        <!-- Sidebar com informações -->
                         <div class="col-md-4">
                             <h5 class="mb-3">
                                 <i class="fas fa-info-circle"></i> Informações
@@ -119,52 +119,45 @@
                                 <div class="card-body">
                                     <div class="text-center mb-3">
                                         <i class="fas fa-user-circle fa-4x text-muted"></i>
-                                        <h6 class="mt-2" id="preview-nome">Nome do Cliente</h6>
+                                        <h6 class="mt-2" id="preview-nome"><?php echo $data['cliente']->nome ?? 'Nome do Cliente'; ?></h6>
                                     </div>
                                     
                                     <ul class="list-unstyled">
                                         <li class="mb-2">
                                             <i class="fas fa-phone text-primary"></i>
-                                            <span id="preview-telefone">Telefone</span>
+                                            <span id="preview-telefone"><?php echo $data['cliente']->telefone ?? 'Telefone'; ?></span>
                                         </li>
                                         <li class="mb-2">
                                             <i class="fas fa-envelope text-primary"></i>
-                                            <span id="preview-email">Email</span>
+                                            <span id="preview-email"><?php echo $data['cliente']->email ?? 'Email'; ?></span>
                                         </li>
                                         <li class="mb-2">
                                             <i class="fas fa-id-card text-primary"></i>
-                                            <span id="preview-cpf">CPF</span>
+                                            <span id="preview-cpf"><?php echo $data['cliente']->cpf ?? 'CPF'; ?></span>
                                         </li>
                                         <li class="mb-2">
                                             <i class="fas fa-map-marker-alt text-primary"></i>
-                                            <span id="preview-cidade">Cidade</span>
+                                            <span id="preview-cidade"><?php echo $data['cliente']->cidade ?? 'Cidade'; ?></span>
                                         </li>
                                     </ul>
+                                    
+                                    <hr>
+                                    <small class="text-muted">
+                                        <strong>Cadastrado em:</strong><br>
+                                        <?php echo formatarDataHora($data['cliente']->criado_em ?? date('Y-m-d H:i:s')); ?>
+                                    </small>
                                 </div>
                             </div>
                             
-                            <div class="card bg-primary text-white mt-3">
+                            <div class="card bg-warning text-dark mt-3">
                                 <div class="card-body">
                                     <h6 class="card-title">
-                                        <i class="fas fa-lightbulb"></i> Dica
+                                        <i class="fas fa-exclamation-triangle"></i> Atenção
                                     </h6>
                                     <p class="card-text small mb-0">
-                                        Preencha pelo menos o nome e telefone. 
-                                        Os demais campos são opcionais mas ajudam 
-                                        no controle e contato com o cliente.
-                                    </p>
-                                </div>
-                            </div>
-                            
-                            <div class="card bg-info text-white mt-3">
-                                <div class="card-body">
-                                    <h6 class="card-title">
-                                        <i class="fas fa-shield-alt"></i> Privacidade
-                                    </h6>
-                                    <p class="card-text small mb-0">
-                                        Todos os dados pessoais são protegidos 
-                                        e utilizados apenas para fins de 
-                                        atendimento e contato.
+                                        Alterações nos dados do cliente serão 
+                                        refletidas em todas as ordens de serviço 
+                                        associadas.
                                     </p>
                                 </div>
                             </div>
@@ -181,7 +174,7 @@
                                     <i class="fas fa-times"></i> Cancelar
                                 </a>
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save"></i> Cadastrar Cliente
+                                    <i class="fas fa-save"></i> Salvar Alterações
                                 </button>
                             </div>
                         </div>
@@ -192,18 +185,16 @@
     </div>
 </div>
 
-<?php require APPROOT . '/app/views/inc/footer.php'; ?>
-
 <!-- Scripts específicos -->
 <script>
 $(document).ready(function() {
     // Preview em tempo real
     function updatePreview() {
-        $('#preview-nome').text($('#nome').val() || 'Nome do Cliente');
-        $('#preview-telefone').text($('#telefone').val() || 'Telefone');
-        $('#preview-email').text($('#email').val() || 'Email');
-        $('#preview-cpf').text($('#cpf').val() || 'CPF');
-        $('#preview-cidade').text($('#cidade').val() || 'Cidade');
+        $('#preview-nome').text($('#nome').val() || '<?php echo $data['cliente']->nome ?? 'Nome do Cliente'; ?>');
+        $('#preview-telefone').text($('#telefone').val() || '<?php echo $data['cliente']->telefone ?? 'Telefone'; ?>');
+        $('#preview-email').text($('#email').val() || '<?php echo $data['cliente']->email ?? 'Email'; ?>');
+        $('#preview-cpf').text($('#cpf').val() || '<?php echo $data['cliente']->cpf ?? 'CPF'; ?>');
+        $('#preview-cidade').text($('#cidade').val() || '<?php echo $data['cliente']->cidade ?? 'Cidade'; ?>');
     }
     
     // Atualizar preview quando campos mudarem
@@ -223,10 +214,10 @@ $(document).ready(function() {
                     $('#cidade').val(data.localidade + ' - ' + data.uf);
                     updatePreview();
                 } else {
-                    InfoCellOS.showAlert('CEP não encontrado', 'warning');
+                    alert('CEP não encontrado');
                 }
             }).fail(function() {
-                InfoCellOS.showAlert('Erro ao buscar CEP', 'danger');
+                alert('Erro ao buscar CEP');
             }).always(function() {
                 $('#endereco, #cidade').prop('disabled', false);
                 if ($('#endereco').val() === 'Carregando...') {
@@ -239,7 +230,7 @@ $(document).ready(function() {
     // Validação de CPF em tempo real
     $('#cpf').on('blur', function() {
         var cpf = $(this).val();
-        if (cpf && !InfoCellOS.validarCPF(cpf)) {
+        if (cpf && !validarCPF(cpf)) {
             $(this).addClass('is-invalid');
             $(this).siblings('.invalid-feedback').text('CPF inválido');
         } else {
@@ -260,45 +251,36 @@ $(document).ready(function() {
         }
     });
     
-    // Validação do formulário
-    $('#formCliente').on('submit', function(e) {
-        var isValid = true;
+    // Função para validar CPF
+    function validarCPF(cpf) {
+        cpf = cpf.replace(/[^\d]+/g, '');
         
-        // Validar nome
-        if (!$('#nome').val().trim()) {
-            $('#nome').addClass('is-invalid');
-            isValid = false;
+        if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) {
+            return false;
         }
         
-        // Validar telefone
-        if (!$('#telefone').val().trim()) {
-            $('#telefone').addClass('is-invalid');
-            isValid = false;
+        var soma = 0;
+        var resto;
+        
+        for (var i = 1; i <= 9; i++) {
+            soma += parseInt(cpf.substring(i-1, i)) * (11 - i);
         }
         
-        // Validar CPF se preenchido
-        var cpf = $('#cpf').val();
-        if (cpf && !InfoCellOS.validarCPF(cpf)) {
-            $('#cpf').addClass('is-invalid');
-            isValid = false;
+        resto = (soma * 10) % 11;
+        if (resto === 10 || resto === 11) resto = 0;
+        if (resto !== parseInt(cpf.substring(9, 10))) return false;
+        
+        soma = 0;
+        for (var i = 1; i <= 10; i++) {
+            soma += parseInt(cpf.substring(i-1, i)) * (12 - i);
         }
         
-        // Validar email se preenchido
-        var email = $('#email').val();
-        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (email && !emailRegex.test(email)) {
-            $('#email').addClass('is-invalid');
-            isValid = false;
-        }
+        resto = (soma * 10) % 11;
+        if (resto === 10 || resto === 11) resto = 0;
+        if (resto !== parseInt(cpf.substring(10, 11))) return false;
         
-        if (!isValid) {
-            e.preventDefault();
-            InfoCellOS.showAlert('Por favor, corrija os campos destacados', 'warning');
-        }
-    });
-    
-    // Inicializar preview
-    updatePreview();
+        return true;
+    }
 });
 </script>
 
@@ -310,12 +292,6 @@ $(document).ready(function() {
 
 .card .card-body {
     padding: 1.5rem;
-}
-
-.preview-card {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border: none;
-    border-radius: 10px;
 }
 
 @media (max-width: 768px) {
@@ -333,24 +309,6 @@ $(document).ready(function() {
     }
 }
 
-/* Loading animation para campos de endereço */
-.form-control:disabled {
-    background-color: #f8f9fa;
-    opacity: 0.7;
-}
-
-/* Estilo para campos inválidos */
-.is-invalid {
-    border-color: #dc3545;
-    background-color: #fff5f5;
-}
-
-.is-invalid:focus {
-    border-color: #dc3545;
-    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
-}
-
-/* Preview responsivo */
 .list-unstyled li {
     word-break: break-all;
 }
@@ -362,4 +320,4 @@ $(document).ready(function() {
 }
 </style>
 
-
+<?php require APPROOT . '/app/views/inc/footer.php'; ?>

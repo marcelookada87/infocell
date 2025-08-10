@@ -23,6 +23,8 @@ class Database
         // Set DSN
         $dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->dbname . ';charset=utf8mb4';
         
+        error_log("Attempting database connection to: " . $this->host . " with database: " . $this->dbname);
+        
         $options = array(
             PDO::ATTR_PERSISTENT => true,
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
@@ -31,8 +33,11 @@ class Database
         // Create a PDO instance
         try {
             $this->dbh = new PDO($dsn, $this->user, $this->pass, $options);
+            error_log("Database connection successful");
         } catch (PDOException $e) {
             $this->error = $e->getMessage();
+            error_log("Database connection failed: " . $this->error);
+            throw $e;
         }
     }
     
@@ -66,7 +71,14 @@ class Database
     // Execute the prepared statement
     public function execute()
     {
-        return $this->stmt->execute();
+        try {
+            $result = $this->stmt->execute();
+            error_log("Query executed successfully: " . ($result ? "true" : "false"));
+            return $result;
+        } catch (Exception $e) {
+            error_log("Error executing query: " . $e->getMessage());
+            throw $e;
+        }
     }
     
     // Get result set as array of objects
@@ -79,14 +91,28 @@ class Database
     // Get single record as object
     public function single()
     {
-        $this->execute();
-        return $this->stmt->fetch(PDO::FETCH_OBJ);
+        try {
+            $this->execute();
+            $result = $this->stmt->fetch(PDO::FETCH_OBJ);
+            error_log("Single query result: " . ($result ? "Found" : "Not found"));
+            return $result;
+        } catch (Exception $e) {
+            error_log("Error in single() method: " . $e->getMessage());
+            throw $e;
+        }
     }
     
     // Get record row count
     public function rowCount()
     {
-        return $this->stmt->rowCount();
+        try {
+            $count = $this->stmt->rowCount();
+            error_log("Row count: " . $count);
+            return $count;
+        } catch (Exception $e) {
+            error_log("Error getting row count: " . $e->getMessage());
+            throw $e;
+        }
     }
     
     // Get last insert ID

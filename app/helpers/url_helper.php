@@ -2,7 +2,9 @@
 // Redirecionar simples
 function redirect($page)
 {
-    header('location: ' . URLROOT . '/' . $page);
+    $redirectUrl = URLROOT . '/' . $page;
+    error_log("Redirecting to: " . $redirectUrl);
+    header('location: ' . $redirectUrl);
     exit();
 }
 
@@ -80,12 +82,12 @@ function truncarTexto($texto, $limite = 50)
 function statusBadge($status)
 {
     $badges = [
-        'aberta' => 'badge badge-warning',
-        'em_andamento' => 'badge badge-info',
-        'aguardando_peca' => 'badge badge-secondary',
-        'aguardando_cliente' => 'badge badge-primary',
-        'concluida' => 'badge badge-success',
-        'cancelada' => 'badge badge-danger'
+        'aberta' => 'badge bg-warning text-dark',
+        'em_andamento' => 'badge bg-info text-white',
+        'aguardando_peca' => 'badge bg-secondary text-white',
+        'aguardando_cliente' => 'badge bg-primary text-white',
+        'concluida' => 'badge bg-success text-white',
+        'cancelada' => 'badge bg-danger text-white'
     ];
     
     $labels = [
@@ -97,7 +99,7 @@ function statusBadge($status)
         'cancelada' => 'Cancelada'
     ];
     
-    $class = isset($badges[$status]) ? $badges[$status] : 'badge badge-secondary';
+    $class = isset($badges[$status]) ? $badges[$status] : 'badge bg-secondary text-white';
     $label = isset($labels[$status]) ? $labels[$status] : ucfirst($status);
     
     return '<span class="' . $class . '">' . $label . '</span>';
@@ -107,10 +109,10 @@ function statusBadge($status)
 function prioridadeBadge($prioridade)
 {
     $badges = [
-        'baixa' => 'badge badge-success',
-        'media' => 'badge badge-warning',
-        'alta' => 'badge badge-danger',
-        'urgente' => 'badge badge-dark'
+        'baixa' => 'badge bg-success text-white',
+        'media' => 'badge bg-warning text-dark',
+        'alta' => 'badge bg-danger text-white',
+        'urgente' => 'badge bg-dark text-white'
     ];
     
     $labels = [
@@ -120,7 +122,7 @@ function prioridadeBadge($prioridade)
         'urgente' => 'Urgente'
     ];
     
-    $class = isset($badges[$prioridade]) ? $badges[$prioridade] : 'badge badge-secondary';
+    $class = isset($badges[$prioridade]) ? $badges[$prioridade] : 'badge bg-secondary text-white';
     $label = isset($labels[$prioridade]) ? $labels[$prioridade] : ucfirst($prioridade);
     
     return '<span class="' . $class . '">' . $label . '</span>';

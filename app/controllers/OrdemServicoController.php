@@ -32,7 +32,7 @@ class OrdemServicoController extends Controller
     public function criar()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            $_POST = sanitizePostData($_POST);
             
             $data = [
                 'cliente_id' => trim($_POST['cliente_id']),
@@ -111,7 +111,7 @@ class OrdemServicoController extends Controller
     public function editar($id)
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            $_POST = sanitizePostData($_POST);
             
             $data = [
                 'id' => $id,

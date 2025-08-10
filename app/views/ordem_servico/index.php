@@ -145,7 +145,7 @@
                                    class="btn btn-sm btn-outline-warning" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <?php if ($_SESSION['user_type'] == 'admin'): ?>
+                                <?php if (isset($_SESSION['user_type']) && $_SESSION['user_type'] == 'admin'): ?>
                                 <form method="POST" action="<?php echo URLROOT; ?>/ordem-servico/deletar/<?php echo $ordem->id; ?>" class="d-inline">
                                     <button type="submit" class="btn btn-sm btn-outline-danger btn-delete" title="Excluir">
                                         <i class="fas fa-trash"></i>
@@ -171,6 +171,8 @@
         <?php endif; ?>
     </div>
 </div>
+
+<?php require APPROOT . '/app/views/inc/footer.php'; ?>
 
 <!-- Scripts específicos -->
 <script>
@@ -206,5 +208,5 @@ $(document).ready(function() {
 });
 </script>
 
-<?php require APPROOT . '/app/views/inc/footer.php'; ?>
+
 

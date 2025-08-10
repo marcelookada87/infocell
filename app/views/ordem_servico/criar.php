@@ -176,6 +176,9 @@
     </div>
 </div>
 
+
+<?php require APPROOT . '/app/views/inc/footer.php'; ?>
+
 <!-- Scripts específicos -->
 <script>
 $(document).ready(function() {
@@ -233,5 +236,4 @@ $(document).ready(function() {
 });
 </script>
 
-<?php require APPROOT . '/app/views/inc/footer.php'; ?>
 

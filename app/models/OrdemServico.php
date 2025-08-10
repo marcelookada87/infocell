@@ -230,6 +230,21 @@ class OrdemServico
         return $results;
     }
     
+    // Ordens por cliente ID
+    public function getOrdensByClienteId($cliente_id)
+    {
+        $this->db->query('SELECT os.*, c.nome as cliente_nome 
+                         FROM ordens_servico os
+                         LEFT JOIN clientes c ON os.cliente_id = c.id
+                         WHERE os.cliente_id = :cliente_id
+                         ORDER BY os.criado_em DESC');
+        $this->db->bind(':cliente_id', $cliente_id);
+        
+        $results = $this->db->resultSet();
+        
+        return $results;
+    }
+    
     // Ordens com filtros
     public function getOrdensComFiltros($filtros)
     {

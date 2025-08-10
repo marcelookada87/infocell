@@ -119,7 +119,7 @@
                                    class="btn btn-sm btn-outline-success" title="Nova OS">
                                     <i class="fas fa-plus"></i>
                                 </a>
-                                <?php if ($_SESSION['user_type'] == 'admin'): ?>
+                                <?php if (isset($_SESSION['user_type']) && $_SESSION['user_type'] == 'admin'): ?>
                                 <form method="POST" action="<?php echo URLROOT; ?>/cliente/deletar/<?php echo $cliente->id; ?>" class="d-inline">
                                     <button type="submit" class="btn btn-sm btn-outline-danger btn-delete" title="Excluir">
                                         <i class="fas fa-trash"></i>
@@ -234,6 +234,8 @@
 </div>
 <?php endif; ?>
 
+<?php require APPROOT . '/app/views/inc/footer.php'; ?>
+
 <!-- Scripts específicos -->
 <script>
 $(document).ready(function() {
@@ -303,6 +305,4 @@ $(document).ready(function() {
     }
 }
 </style>
-
-<?php require APPROOT . '/app/views/inc/footer.php'; ?>
 

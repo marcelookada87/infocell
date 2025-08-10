@@ -28,7 +28,7 @@ class ClienteController extends Controller
     public function criar()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            $_POST = sanitizePostData($_POST);
             
             $data = [
                 'nome' => trim($_POST['nome']),
@@ -95,8 +95,13 @@ class ClienteController extends Controller
             redirect('cliente');
         }
         
+        // Buscar ordens de serviço do cliente
+        $ordemServicoModel = $this->model('OrdemServico');
+        $ordens_servico = $ordemServicoModel->getOrdensByClienteId($id);
+        
         $data = [
-            'cliente' => $cliente
+            'cliente' => $cliente,
+            'ordens_servico' => $ordens_servico
         ];
         
         $this->view('cliente/visualizar', $data);
@@ -105,7 +110,7 @@ class ClienteController extends Controller
     public function editar($id)
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            $_POST = sanitizePostData($_POST);
             
             $data = [
                 'id' => $id,

@@ -9,10 +9,12 @@ class App
     public function __construct()
     {
         $url = $this->parseUrl();
+        error_log("Parsed URL: " . print_r($url, true));
         
         // Verificar se o controller existe
         if (isset($url[0])) {
             $controllerName = ucfirst($url[0]);
+            error_log("Initial controller name: " . $controllerName);
             
             // Mapear URLs amigáveis
             $controllerMap = [
@@ -26,28 +28,44 @@ class App
             
             if (array_key_exists($url[0], $controllerMap)) {
                 $controllerName = $controllerMap[$url[0]];
+                error_log("Mapped controller name: " . $controllerName);
             }
             
-            if (file_exists(APPROOT . '/app/controllers/' . $controllerName . 'Controller.php')) {
+            $controllerFile = APPROOT . '/app/controllers/' . $controllerName . 'Controller.php';
+            error_log("Looking for controller file: " . $controllerFile);
+            
+            if (file_exists($controllerFile)) {
+                error_log("Controller file found, setting controller to: " . $controllerName);
                 $this->controller = $controllerName;
                 unset($url[0]);
+            } else {
+                error_log("Controller file not found: " . $controllerFile);
             }
         }
         
-        require_once APPROOT . '/app/controllers/' . $this->controller . 'Controller.php';
+        $controllerFile = APPROOT . '/app/controllers/' . $this->controller . 'Controller.php';
+        error_log("Loading controller file: " . $controllerFile);
+        require_once $controllerFile;
         
         $controllerClass = $this->controller . 'Controller';
+        error_log("Instantiating controller class: " . $controllerClass);
         $this->controller = new $controllerClass();
         
         // Verificar se o método existe
         if (isset($url[1])) {
+            error_log("Looking for method: " . $url[1]);
             if (method_exists($this->controller, $url[1])) {
+                error_log("Method found, setting method to: " . $url[1]);
                 $this->method = $url[1];
                 unset($url[1]);
+            } else {
+                error_log("Method not found: " . $url[1]);
             }
         }
         
         $this->params = $url ? array_values($url) : [];
+        error_log("Final parameters: " . print_r($this->params, true));
+        error_log("Calling method: " . $this->method . " on controller: " . get_class($this->controller));
         
         call_user_func_array([$this->controller, $this->method], $this->params);
     }
@@ -55,7 +73,12 @@ class App
     public function parseUrl()
     {
         if (isset($_GET['url'])) {
-            return $url = explode('/', filter_var(rtrim($_GET['url'], '/'), FILTER_SANITIZE_URL));
+            $url = explode('/', filter_var(rtrim($_GET['url'], '/'), FILTER_SANITIZE_URL));
+            error_log("Parsed URL from GET['url']: " . print_r($url, true));
+            return $url;
+        } else {
+            error_log("No GET['url'] parameter found");
+            return [];
         }
     }
 }

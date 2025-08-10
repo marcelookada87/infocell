@@ -7,13 +7,77 @@
     <title><?php echo SITENAME; ?></title>
     
     <!-- Bootstrap CSS -->
-    <link href="<?php echo URLROOT; ?>/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Font Awesome -->
-    <link href="<?php echo URLROOT; ?>/css/fontawesome-all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <!-- Custom CSS -->
     <link href="<?php echo URLROOT; ?>/css/style.css" rel="stylesheet">
+    
+    <!-- Forçar tema claro -->
+    <style>
+        html, body {
+            background-color: #f8f9fa !important;
+            color: #212529 !important;
+        }
+        .main-content {
+            background-color: #f8f9fa !important;
+            color: #212529 !important;
+        }
+        .card {
+            background-color: #ffffff !important;
+            color: #212529 !important;
+        }
+        .card-body {
+            background-color: #ffffff !important;
+            color: #212529 !important;
+        }
+        .container-fluid {
+            background-color: transparent !important;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            color: #212529 !important;
+        }
+        .form-label, label {
+            color: #495057 !important;
+        }
+        .text-muted {
+            color: #6c757d !important;
+        }
+        /* Forçar cores escuras em textos */
+        * {
+            color: inherit !important;
+        }
+        
+        /* NAVBAR - Manter texto branco na navbar azul */
+        .navbar-dark .navbar-brand,
+        .navbar-dark .navbar-nav .nav-link,
+        .navbar-dark .navbar-nav .dropdown-toggle,
+        .navbar-dark .navbar-toggler-icon {
+            color: white !important;
+        }
+        
+        .navbar-dark .navbar-brand *,
+        .navbar-dark .navbar-nav .nav-link *,
+        .navbar-dark .navbar-nav .dropdown-toggle * {
+            color: white !important;
+        }
+        
+        /* Dropdown menus - manter texto escuro */
+        .dropdown-menu .dropdown-item {
+            color: #212529 !important;
+        }
+        
+        .dropdown-menu .dropdown-item * {
+            color: #212529 !important;
+        }
+        
+        /* Sidebar - manter texto escuro */
+        .sidebar * {
+            color: inherit;
+        }
+    </style>
     
     <!-- Chart.js -->
     <script src="<?php echo URLROOT; ?>/js/chart.min.js"></script>
@@ -90,7 +154,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-user-circle"></i> 
-                            <?php echo $_SESSION['user_name']; ?>
+                            <?php echo $_SESSION['user_name'] ?? 'Usuário'; ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="<?php echo URLROOT; ?>/dashboard/perfil">

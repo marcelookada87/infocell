@@ -21,7 +21,7 @@ class AuthController extends Controller
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Sanitizar dados
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            $_POST = sanitizePostData($_POST);
             
             $data = [
                 'email' => trim($_POST['email']),

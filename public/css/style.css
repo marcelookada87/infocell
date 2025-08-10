@@ -17,7 +17,8 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 14px;
-    background-color: #f8f9fa;
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
 }
 
 /* Navbar customizations */
@@ -84,6 +85,8 @@ body {
 .main-content {
     margin-left: 0;
     padding-top: 80px;
+    background-color: #ffffff !important;
+    min-height: 100vh;
 }
 
 @media (min-width: 768px) {
@@ -123,6 +126,7 @@ body {
     font-weight: 500;
     padding: 0.375rem 0.75rem;
     border-radius: 0.375rem;
+    display: inline-block;
 }
 
 .badge-aberta {
@@ -142,7 +146,7 @@ body {
 
 .badge-aguardando_cliente {
     background-color: #007bff;
-    color: white;
+    color: white !important;
 }
 
 .badge-concluida {
@@ -214,6 +218,8 @@ body {
     border-radius: 0.75rem;
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
     transition: all 0.3s ease;
+    background-color: #ffffff !important;
+    color: #212529 !important;
 }
 
 .card:hover {
@@ -285,7 +291,7 @@ body {
     font-size: 0.75rem;
 }
 
-.font-weight-bold {
+.font-weight-bold, .fw-bold {
     font-weight: 700 !important;
 }
 
@@ -295,6 +301,28 @@ body {
 
 .text-gray-300 {
     color: #dddfeb !important;
+}
+
+/* Compatibilidade Bootstrap 4 -> 5 */
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+.ml-auto {
+    margin-left: auto !important;
+}
+
+.mr-auto {
+    margin-right: auto !important;
+}
+
+.pl-3 {
+    padding-left: 1rem !important;
+}
+
+.pr-3 {
+    padding-right: 1rem !important;
 }
 
 /* Loading spinner */
@@ -350,28 +378,47 @@ body {
     }
 }
 
-/* Dark mode support (opcional) */
+/* FORÇAR TEMA CLARO SEMPRE */
+html, body {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+}
+
+.container-fluid, .container, .row, .col, [class*="col-"] {
+    background-color: transparent !important;
+    color: inherit !important;
+}
+
+/* Forçar tema claro - desabilitar dark mode */
 @media (prefers-color-scheme: dark) {
-    body {
-        background-color: #1a1a1a;
-        color: #ffffff;
+    html, body {
+        background-color: #f8f9fa !important;
+        color: #212529 !important;
     }
     
     .card {
-        background-color: #2d2d2d;
-        color: #ffffff;
+        background-color: #ffffff !important;
+        color: #212529 !important;
     }
     
     .sidebar {
-        background-color: #2d2d2d;
+        background-color: #f8f9fa !important;
+        color: #212529 !important;
     }
     
     .table {
-        color: #ffffff;
+        color: #212529 !important;
+        background-color: #ffffff !important;
     }
     
     .table th {
-        background-color: #3d3d3d;
+        background-color: #f8f9fa !important;
+        color: #212529 !important;
+    }
+    
+    .main-content {
+        background-color: #f8f9fa !important;
+        color: #212529 !important;
     }
 }
 
@@ -400,4 +447,55 @@ body {
 .status-aguardando_cliente { background-color: #007bff; }
 .status-concluida { background-color: #28a745; }
 .status-cancelada { background-color: #dc3545; }
+
+/* GARANTIR TEXTO BRANCO EM FUNDOS AZUIS */
+.btn-primary, 
+.btn-primary:hover, 
+.btn-primary:focus, 
+.btn-primary:active,
+.bg-primary,
+.bg-info,
+.badge-primary,
+.badge-info,
+.badge-aguardando_cliente,
+.badge-em_andamento,
+.text-bg-primary,
+.text-bg-info,
+.navbar-dark {
+    color: white !important;
+}
+
+/* NAVBAR - Garantir texto branco na navbar azul */
+.navbar-dark .navbar-brand,
+.navbar-dark .navbar-nav .nav-link,
+.navbar-dark .navbar-nav .dropdown-toggle,
+.navbar-dark .navbar-toggler-icon {
+    color: white !important;
+}
+
+.navbar-dark .navbar-brand *,
+.navbar-dark .navbar-nav .nav-link *,
+.navbar-dark .navbar-nav .dropdown-toggle * {
+    color: white !important;
+}
+
+/* Bootstrap classes com fundo azul */
+.btn-primary *, 
+.bg-primary *, 
+.badge-primary *,
+.badge-info *,
+.text-bg-primary *,
+.text-bg-info * {
+    color: white !important;
+}
+
+/* Navbar e elementos Bootstrap com primary color */
+.navbar-brand.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-info:hover {
+    color: white !important;
+}
 

@@ -31,34 +31,59 @@ class User
     // Login do usuário
     public function login($email, $password)
     {
-        $this->db->query('SELECT * FROM usuarios WHERE email = :email');
-        $this->db->bind(':email', $email);
-        
-        $row = $this->db->single();
-        
-        $hashed_password = $row->senha;
-        if (password_verify($password, $hashed_password)) {
-            return $row;
-        } else {
-            return false;
+        try {
+            error_log("Attempting login for email: " . $email);
+            
+            $this->db->query('SELECT * FROM usuarios WHERE email = :email');
+            $this->db->bind(':email', $email);
+            
+            $row = $this->db->single();
+            
+            if ($row) {
+                error_log("User found in database: " . $email);
+                $hashed_password = $row->senha;
+                
+                if (password_verify($password, $hashed_password)) {
+                    error_log("Password verified successfully for: " . $email);
+                    return $row;
+                } else {
+                    error_log("Password verification failed for: " . $email);
+                    return false;
+                }
+            } else {
+                error_log("No user found in database for: " . $email);
+                return false;
+            }
+        } catch (Exception $e) {
+            error_log("Database error during login: " . $e->getMessage());
+            throw $e;
         }
     }
     
     // Encontrar usuário por email
     public function findUserByEmail($email)
     {
-        $this->db->query('SELECT * FROM usuarios WHERE email = :email');
-        
-        // Bind valor
-        $this->db->bind(':email', $email);
-        
-        $row = $this->db->single();
-        
-        // Verificar linha
-        if ($this->db->rowCount() > 0) {
-            return true;
-        } else {
-            return false;
+        try {
+            error_log("Searching for user with email: " . $email);
+            
+            $this->db->query('SELECT * FROM usuarios WHERE email = :email');
+            
+            // Bind valor
+            $this->db->bind(':email', $email);
+            
+            $row = $this->db->single();
+            
+            // Verificar linha
+            if ($this->db->rowCount() > 0) {
+                error_log("User found with email: " . $email);
+                return true;
+            } else {
+                error_log("No user found with email: " . $email);
+                return false;
+            }
+        } catch (Exception $e) {
+            error_log("Database error finding user by email: " . $e->getMessage());
+            throw $e;
         }
     }
     

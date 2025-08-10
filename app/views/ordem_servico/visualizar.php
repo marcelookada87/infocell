@@ -343,7 +343,7 @@
                         <i class="fas fa-phone"></i> Ligar para Cliente
                     </a>
                     
-                    <?php if ($_SESSION['user_type'] == 'admin'): ?>
+                    <?php if (isset($_SESSION['user_type']) && $_SESSION['user_type'] == 'admin'): ?>
                     <form method="POST" action="<?php echo URLROOT; ?>/ordem-servico/deletar/<?php echo $data['ordem']->id; ?>" class="d-inline">
                         <button type="submit" class="btn btn-outline-danger btn-sm btn-delete w-100">
                             <i class="fas fa-trash"></i> Excluir OS
@@ -392,6 +392,8 @@
         </div>
     </div>
 </div>
+
+<?php require APPROOT . '/app/views/inc/footer.php'; ?>
 
 <script>
 function alterarStatus(novoStatus) {
@@ -444,6 +446,4 @@ window.addEventListener('afterprint', function() {
     }
 }
 </style>
-
-<?php require APPROOT . '/app/views/inc/footer.php'; ?>
 
