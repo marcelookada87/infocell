@@ -27,7 +27,9 @@ class Database
         
         $options = array(
             PDO::ATTR_PERSISTENT => true,
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
+            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
         );
         
         // Create a PDO instance
@@ -37,7 +39,7 @@ class Database
         } catch (PDOException $e) {
             $this->error = $e->getMessage();
             error_log("Database connection failed: " . $this->error);
-            throw $e;
+            throw new Exception("Erro de conexão com banco de dados: " . $this->error);
         }
     }
     
@@ -77,7 +79,7 @@ class Database
             return $result;
         } catch (Exception $e) {
             error_log("Error executing query: " . $e->getMessage());
-            throw $e;
+            throw new Exception("Erro ao executar query: " . $e->getMessage());
         }
     }
     
@@ -98,7 +100,7 @@ class Database
             return $result;
         } catch (Exception $e) {
             error_log("Error in single() method: " . $e->getMessage());
-            throw $e;
+            throw new Exception("Erro ao buscar registro único: " . $e->getMessage());
         }
     }
     
@@ -111,7 +113,7 @@ class Database
             return $count;
         } catch (Exception $e) {
             error_log("Error getting row count: " . $e->getMessage());
-            throw $e;
+            throw new Exception("Erro ao contar registros: " . $e->getMessage());
         }
     }
     

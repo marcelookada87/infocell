@@ -40,15 +40,29 @@ class App
                 unset($url[0]);
             } else {
                 error_log("Controller file not found: " . $controllerFile);
+                // Se não encontrar o controller, usar Home como padrão
+                $this->controller = 'Home';
             }
         }
         
         $controllerFile = APPROOT . '/app/controllers/' . $this->controller . 'Controller.php';
         error_log("Loading controller file: " . $controllerFile);
+        
+        if (!file_exists($controllerFile)) {
+            error_log("Controller file not found: " . $controllerFile);
+            die('Controller não encontrado: ' . $this->controller);
+        }
+        
         require_once $controllerFile;
         
         $controllerClass = $this->controller . 'Controller';
         error_log("Instantiating controller class: " . $controllerClass);
+        
+        if (!class_exists($controllerClass)) {
+            error_log("Controller class not found: " . $controllerClass);
+            die('Classe do controller não encontrada: ' . $controllerClass);
+        }
+        
         $this->controller = new $controllerClass();
         
         // Verificar se o método existe
@@ -60,6 +74,8 @@ class App
                 unset($url[1]);
             } else {
                 error_log("Method not found: " . $url[1]);
+                // Se o método não existir, usar index como padrão
+                $this->method = 'index';
             }
         }
         
@@ -67,7 +83,12 @@ class App
         error_log("Final parameters: " . print_r($this->params, true));
         error_log("Calling method: " . $this->method . " on controller: " . get_class($this->controller));
         
-        call_user_func_array([$this->controller, $this->method], $this->params);
+        try {
+            call_user_func_array([$this->controller, $this->method], $this->params);
+        } catch (Exception $e) {
+            error_log("Error calling controller method: " . $e->getMessage());
+            die('Erro ao executar o controller: ' . $e->getMessage());
+        }
     }
     
     public function parseUrl()

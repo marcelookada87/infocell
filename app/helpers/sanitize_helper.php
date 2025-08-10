@@ -12,6 +12,7 @@
 function sanitizePostData($data) {
     // Verificar se $data é um array válido
     if (!is_array($data) || empty($data)) {
+        error_log("sanitizePostData: Invalid or empty data received");
         return [];
     }
     
@@ -24,6 +25,8 @@ function sanitizePostData($data) {
             $sanitized[$key] = $value;
         }
     }
+    
+    error_log("sanitizePostData: Sanitized " . count($sanitized) . " items");
     return $sanitized;
 }
 

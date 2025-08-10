@@ -14,7 +14,7 @@ class AuthController extends Controller
         error_log("AuthController index method called");
         
         // Redireciona para login se não estiver autenticado
-        if (!$this->isLoggedIn()) {
+        if (!$this->userModel->isLoggedIn()) {
             error_log("User not logged in, showing login page");
             $this->view('auth/login');
         } else {
@@ -103,8 +103,15 @@ class AuthController extends Controller
                     
                     if ($loggedInUser) {
                         error_log("Login successful for user: " . $data['email']);
-                        // Criar sessão
-                        $this->createUserSession($loggedInUser);
+                        
+                        // Definir dados da sessão
+                        setUserSession($loggedInUser);
+                        
+                        // Criar cookie de autenticação
+                        $this->createUserCookie($loggedInUser);
+                        
+                        // Redirecionar para dashboard
+                        redirect('dashboard');
                     } else {
                         error_log("Login failed for user: " . $data['email'] . " - Invalid password");
                         $data['password_err'] = 'Senha incorreta';
@@ -136,39 +143,42 @@ class AuthController extends Controller
     
     public function logout()
     {
-        unset($_SESSION['user_id']);
-        unset($_SESSION['user_email']);
-        unset($_SESSION['user_name']);
-        unset($_SESSION['user_type']);
-        session_destroy();
+        $userId = getLoggedInUserId();
+        
+        if ($userId) {
+            // Invalidar hash no banco
+            $this->userModel->invalidateAuthHash($userId);
+        }
+        
+        // Limpar sessão
+        clearSession();
+        
+        // Limpar cookie
+        clearAuthCookie();
+        
+        error_log("User logged out successfully");
         redirect('auth/login');
     }
     
-    private function createUserSession($user)
+    private function createUserCookie($user)
     {
         try {
-            error_log("Creating user session for user ID: " . $user->id);
+            error_log("Creating user cookie for user ID: " . $user->id);
             
-            $_SESSION['user_id'] = $user->id;
-            $_SESSION['user_email'] = $user->email;
-            $_SESSION['user_name'] = $user->nome;
-            $_SESSION['user_type'] = $user->tipo;
+            // Criar cookie de autenticação
+            $authHash = createAuthCookie($user->id, $user->email);
             
-            error_log("Session variables set: " . print_r($_SESSION, true));
-            
-            error_log("Redirecting to dashboard");
-            redirect('dashboard');
+            if ($authHash) {
+                error_log("Cookie created successfully for user: " . $user->email);
+                return $authHash;
+            } else {
+                error_log("Failed to create cookie for user: " . $user->email);
+                throw new Exception("Erro ao criar cookie de autenticação");
+            }
         } catch (Exception $e) {
-            error_log("Error creating user session: " . $e->getMessage());
+            error_log("Error creating user cookie: " . $e->getMessage());
             throw $e;
         }
-    }
-    
-    private function isLoggedIn()
-    {
-        $loggedIn = isset($_SESSION['user_id']);
-        error_log("isLoggedIn check: " . ($loggedIn ? "true" : "false") . " - Session: " . print_r($_SESSION, true));
-        return $loggedIn;
     }
 }
 

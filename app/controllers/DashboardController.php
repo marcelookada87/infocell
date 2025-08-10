@@ -5,11 +5,14 @@ class DashboardController extends Controller
     private $ordemServicoModel;
     private $clienteModel;
     private $dispositivoModel;
+    private $userModel;
     
     public function __construct()
     {
         // Verificar se está logado
-        if (!isset($_SESSION['user_id'])) {
+        $this->userModel = $this->model('User');
+        
+        if (!$this->userModel->isLoggedIn()) {
             redirect('auth/login');
         }
         
@@ -28,6 +31,9 @@ class DashboardController extends Controller
     
     public function index()
     {
+        // Obter dados do usuário logado
+        $loggedInUser = $this->userModel->isLoggedIn();
+        
         // Buscar dados para dashboard ou usar dados mock se não há conexão
         if ($this->ordemServicoModel && $this->clienteModel && $this->dispositivoModel) {
             $data = [
@@ -39,7 +45,7 @@ class DashboardController extends Controller
                 'ordens_recentes' => $this->ordemServicoModel->getOrdensRecentes(10),
                 'dispositivos_mais_reparados' => $this->dispositivoModel->getDispositivosMaisReparados(5),
                 'receita_mensal' => $this->ordemServicoModel->getReceitaMensal(),
-                'user_name' => $_SESSION['user_name'] ?? 'Usuário'
+                'user_name' => $loggedInUser->nome ?? 'Usuário'
             ];
         } else {
             // Dados mock para demonstração
@@ -52,7 +58,7 @@ class DashboardController extends Controller
                 'ordens_recentes' => [],
                 'dispositivos_mais_reparados' => [],
                 'receita_mensal' => 0,
-                'user_name' => $_SESSION['user_name'] ?? 'Usuário'
+                'user_name' => $loggedInUser->nome ?? 'Usuário'
             ];
         }
         
@@ -61,11 +67,10 @@ class DashboardController extends Controller
     
     public function perfil()
     {
-        $userModel = $this->model('User');
-        $user = $userModel->getUserById($_SESSION['user_id']);
+        $loggedInUser = $this->userModel->isLoggedIn();
         
         $data = [
-            'user' => $user
+            'user' => $loggedInUser
         ];
         
         $this->view('dashboard/perfil', $data);

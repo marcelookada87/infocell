@@ -4,8 +4,22 @@ function redirect($page)
 {
     $redirectUrl = URLROOT . '/' . $page;
     error_log("Redirecting to: " . $redirectUrl);
-    header('location: ' . $redirectUrl);
-    exit();
+    
+    // Limpar qualquer saída anterior
+    if (ob_get_length()) {
+        ob_clean();
+    }
+    
+    // Garantir que não há saída antes do header
+    if (!headers_sent()) {
+        header('Location: ' . $redirectUrl);
+        exit();
+    } else {
+        // Se headers já foram enviados, usar JavaScript
+        echo '<script>window.location.href = "' . $redirectUrl . '";</script>';
+        echo '<noscript><meta http-equiv="refresh" content="0;url=' . $redirectUrl . '"></noscript>';
+        exit();
+    }
 }
 
 // Flash message helper
@@ -32,14 +46,20 @@ function flash($name = '', $message = '', $class = 'alert alert-success')
     }
 }
 
-// Verificar se está logado
+// Verificar se está logado (sessão ou cookie)
 function isLoggedIn()
 {
-    if (isset($_SESSION['user_id'])) {
+    // Primeiro verifica se há sessão ativa
+    if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
         return true;
-    } else {
-        return false;
     }
+    
+    // Se não há sessão, verifica se há cookie válido
+    if (function_exists('isLoggedInByCookie')) {
+        return isLoggedInByCookie();
+    }
+    
+    return false;
 }
 
 // Formatar data brasileira
