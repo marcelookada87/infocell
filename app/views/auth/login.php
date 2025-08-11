@@ -21,7 +21,7 @@
     <div class="container-fluid h-100">
         <div class="row h-100">
             <!-- Lado esquerdo - Imagem/Branding -->
-            <div class="col-lg-6 d-none d-lg-flex login-image-side">
+            <div class="col-lg-5 d-none d-lg-flex login-image-side">
                 <div class="login-image-content">
                     <div class="text-center">
                         <i class="fas fa-mobile-alt fa-5x text-white mb-4"></i>
@@ -36,7 +36,7 @@
             </div>
             
             <!-- Lado direito - Formulário de login -->
-            <div class="col-lg-6 d-flex align-items-center">
+            <div class="col-lg-7 d-flex align-items-center">
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-md-8 col-lg-6">

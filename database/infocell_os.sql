@@ -3,10 +3,6 @@
 -- Banco de Dados MySQL
 -- Criado para PHP 8.2 com MVC
 -- ============================================
-
-CREATE DATABASE IF NOT EXISTS infocell_os DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE infocell_os;
-
 -- ============================================
 -- Tabela de Usuários
 -- ============================================
@@ -187,7 +183,7 @@ CREATE TABLE configuracoes (
 
 -- Usuário administrador padrão (senha: admin123)
 INSERT INTO usuarios (nome, email, senha, tipo) VALUES 
-('Administrador', 'admin@infocell.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
+('Administrador', 'admin@infocell.com', '$2y$10$ubIQwKh2ZR7oeeEcySuTlODdLIcS.br7Acu0dT2YrPllUIV1272Ma', 'admin');
 
 -- Configurações iniciais
 INSERT INTO configuracoes (chave, valor, descricao, tipo) VALUES
@@ -287,12 +283,3 @@ CREATE INDEX idx_clientes_nome_telefone ON clientes(nome, telefone);
 -- ============================================
 -- Fim do script
 -- ============================================
-
-
--- Adicionar colunas de autenticação na tabela usuarios
-ALTER TABLE usuarios 
-ADD COLUMN auth_hash VARCHAR(255) NULL AFTER ativo,
-ADD COLUMN ultimo_login TIMESTAMP NULL AFTER auth_hash;
-
--- Criar índice para auth_hash
-CREATE INDEX idx_auth_hash ON usuarios(auth_hash);

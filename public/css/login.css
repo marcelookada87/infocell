@@ -35,7 +35,7 @@
 }
 
 .login-form-container {
-    max-width: 400px;
+    max-width: 500px;
     width: 100%;
     padding: 2rem 1rem;
 }
@@ -46,6 +46,7 @@
     box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
     backdrop-filter: blur(10px);
     background: rgba(255, 255, 255, 0.95);
+    min-width: 450px;
 }
 
 .card-body {
