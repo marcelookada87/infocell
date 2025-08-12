@@ -454,5 +454,19 @@ CREATE INDEX idx_ordens_cliente_status ON ordens_servico(cliente_id, status);
 CREATE INDEX idx_clientes_nome_telefone ON clientes(nome, telefone);
 
 -- ============================================
--- Fim do script
+-- Índices adicionais para melhorar performance dos relatórios (adicionados do relatorios_otimizados.sql)
 -- ============================================
+
+CREATE INDEX idx_ordens_criado_em_status ON ordens_servico(criado_em, status);
+CREATE INDEX idx_ordens_data_entrada_status ON ordens_servico(data_entrada, status);
+CREATE INDEX idx_ordens_cliente_data ON ordens_servico(cliente_id, criado_em);
+CREATE INDEX idx_ordens_dispositivo_status ON ordens_servico(dispositivo_tipo, status);
+CREATE INDEX idx_clientes_cidade_criado ON clientes(cidade, criado_em);
+CREATE INDEX idx_clientes_criado_em ON clientes(criado_em);
+
+-- ============================================
+-- Comando para atualizar estatísticas manualmente
+-- ============================================
+
+-- Para atualizar o cache manualmente, execute:
+-- CALL atualizar_cache_estatisticas();

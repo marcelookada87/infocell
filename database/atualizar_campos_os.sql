@@ -1,9 +1,7 @@
 -- ============================================
 -- Script para atualizar banco de dados existente
 -- Adicionar campos Serial Number e IMEI na tabela ordens_servico
--- ============================================
-
-USE infocell_os;
+-- ==============
 
 -- Adicionar campo serial_number se não existir
 ALTER TABLE ordens_servico 
