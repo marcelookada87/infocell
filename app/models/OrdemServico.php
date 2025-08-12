@@ -240,6 +240,21 @@ class OrdemServico
         }
     }
     
+    // Contar ordens por prioridade
+    public function getTotalOrdensPorPrioridade($prioridade)
+    {
+        $sql = 'SELECT COUNT(*) as total FROM ordens_servico WHERE prioridade = :prioridade';
+        
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([':prioridade' => $prioridade]);
+            $row = $stmt->fetch(PDO::FETCH_OBJ);
+            return $row->total ?? 0;
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao contar ordens por prioridade: " . $e->getMessage());
+        }
+    }
+    
     // Atualizar status da ordem
     public function atualizarStatus($id, $status, $observacoes = '')
     {

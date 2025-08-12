@@ -1,5 +1,8 @@
 <?php require APPROOT . '/app/views/inc/header.php'; ?>
 
+<!-- CSS específico para ordens de serviço -->
+<link rel="stylesheet" href="<?php echo URLROOT; ?>/css/ordem-servico.css">
+
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">
         <i class="fas fa-clipboard-list"></i> Ordens de Serviço
@@ -17,6 +20,81 @@
 </div>
 
 <?php flash('ordem_message'); ?>
+
+<!-- Cards de Status -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Aguardando Cliente
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $data['contadores']['aguardando']; ?></div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-clock fa-2x text-warning"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Aguardando Peça
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $data['contadores']['pendente']; ?></div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-box fa-2x text-info"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Em Andamento
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $data['contadores']['em_andamento']; ?></div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-tools fa-2x text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                            Urgente
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $data['contadores']['urgente']; ?></div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Filtros -->
 <div class="collapse mb-4" id="filtros">

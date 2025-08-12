@@ -25,8 +25,19 @@ class OrdemServicoController extends Controller
     {
         $ordens = $this->ordemServicoModel->getOrdens();
         
+        // Contadores por status
+        $contadores = [
+            'aguardando' => $this->ordemServicoModel->getTotalOrdensPorStatus('aguardando_cliente'),
+            'pendente' => $this->ordemServicoModel->getTotalOrdensPorStatus('aguardando_peca'),
+            'em_andamento' => $this->ordemServicoModel->getTotalOrdensPorStatus('em_andamento'),
+            'urgente' => $this->ordemServicoModel->getTotalOrdensPorPrioridade('urgente'),
+            'aberta' => $this->ordemServicoModel->getTotalOrdensPorStatus('aberta'),
+            'concluida' => $this->ordemServicoModel->getTotalOrdensPorStatus('concluida')
+        ];
+        
         $data = [
-            'ordens' => $ordens
+            'ordens' => $ordens,
+            'contadores' => $contadores
         ];
         
         $this->view('ordem_servico/index', $data);
