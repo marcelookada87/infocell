@@ -21,12 +21,10 @@ class Dispositivo
                 FROM ordens_servico 
                 GROUP BY dispositivo_tipo, dispositivo_marca, dispositivo_modelo 
                 ORDER BY total_reparos DESC 
-                LIMIT :limit';
-        $params = [':limit' => $limit];
+                LIMIT ' . (int)$limit;
         
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_OBJ);
             return $result ? $result : [];
@@ -123,13 +121,10 @@ class Dispositivo
         
         $sql .= ' GROUP BY problema_relatado 
                   ORDER BY total_ocorrencias DESC 
-                  LIMIT :limit';
-        
-        $params[':limit'] = $limit;
+                  LIMIT ' . (int)$limit;
         
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
             $stmt->execute($params);
             return $stmt->fetchAll(PDO::FETCH_OBJ);
         } catch (PDOException $e) {

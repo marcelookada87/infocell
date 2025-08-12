@@ -291,12 +291,10 @@ class OrdemServico
                 LEFT JOIN clientes c ON os.cliente_id = c.id
                 LEFT JOIN usuarios u ON os.usuario_criacao = u.id
                 ORDER BY os.criado_em DESC
-                LIMIT :limit OFFSET :offset';
+                LIMIT ' . (int)$limit . ' OFFSET ' . (int)$offset;
         
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_OBJ);
         } catch (PDOException $e) {
@@ -319,11 +317,10 @@ class OrdemServico
                 LEFT JOIN clientes c ON os.cliente_id = c.id
                 LEFT JOIN usuarios u ON os.usuario_criacao = u.id
                 ORDER BY os.criado_em DESC
-                LIMIT :limit';
+                LIMIT ' . (int)$limit;
         
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_OBJ);
             return $result ? $result : [];
@@ -352,6 +349,254 @@ class OrdemServico
             // Em caso de erro, retornar 0 em vez de lançar exceção
             error_log("Erro ao calcular receita mensal: " . $e->getMessage());
             return 0;
+        }
+    }
+
+    // Métodos para Relatórios
+    
+    // Buscar ordens por status para relatórios
+    public function getOrdensPorStatusRelatorio()
+    {
+        $sql = 'SELECT 
+                    status,
+                    COUNT(*) as quantidade,
+                    ROUND((COUNT(*) * 100.0 / (SELECT COUNT(*) FROM ordens_servico)), 2) as percentual
+                FROM ordens_servico 
+                GROUP BY status 
+                ORDER BY quantidade DESC';
+        
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            error_log("Erro ao buscar ordens por status: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    // Buscar ordens por mês para relatórios
+    public function getOrdensPorMes($ano = null)
+    {
+        $ano = $ano ?: date('Y');
+        $sql = 'SELECT 
+                    MONTH(criado_em) as mes,
+                    COUNT(*) as quantidade,
+                    COALESCE(SUM(valor_final), 0) as valor
+                FROM ordens_servico 
+                WHERE YEAR(criado_em) = :ano
+                GROUP BY MONTH(criado_em)
+                ORDER BY mes ASC';
+        
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':ano', $ano, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            error_log("Erro ao buscar ordens por mês: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    // Buscar receita por mês para relatórios
+    public function getReceitaPorMes($ano = null)
+    {
+        $ano = $ano ?: date('Y');
+        $sql = 'SELECT 
+                    MONTH(criado_em) as mes,
+                    COUNT(*) as quantidade,
+                    COALESCE(SUM(valor_final), 0) as valor
+                FROM ordens_servico 
+                WHERE YEAR(criado_em) = :ano 
+                AND status = "concluida"
+                GROUP BY MONTH(criado_em)
+                ORDER BY mes ASC';
+        
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':ano', $ano, PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_OBJ);
+            
+            // Adicionar total
+            $total = array_sum(array_column($result, 'valor'));
+            return [
+                'dados' => $result,
+                'total' => $total
+            ];
+        } catch (PDOException $e) {
+            error_log("Erro ao buscar receita por mês: " . $e->getMessage());
+            return ['dados' => [], 'total' => 0];
+        }
+    }
+    
+    // Buscar dispositivos mais reparados
+    public function getDispositivosMaisReparados($limit = 10)
+    {
+        $sql = 'SELECT 
+                    dispositivo_tipo as tipo,
+                    COUNT(*) as quantidade,
+                    ROUND((COUNT(*) * 100.0 / (SELECT COUNT(*) FROM ordens_servico)), 2) as percentual
+                FROM ordens_servico 
+                GROUP BY dispositivo_tipo 
+                ORDER BY quantidade DESC 
+                LIMIT ' . (int)$limit;
+        
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            error_log("Erro ao buscar dispositivos mais reparados: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    // Buscar receita total por período
+    public function getReceitaTotal($ano = null, $mes = null)
+    {
+        $sql = 'SELECT COALESCE(SUM(valor_final), 0) as receita_total 
+                FROM ordens_servico 
+                WHERE status = "concluida"';
+        $params = [];
+        
+        if ($ano) {
+            $sql .= ' AND YEAR(criado_em) = :ano';
+            $params[':ano'] = $ano;
+        }
+        
+        if ($mes) {
+            $sql .= ' AND MONTH(criado_em) = :mes';
+            $params[':mes'] = $mes;
+        }
+        
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            $row = $stmt->fetch(PDO::FETCH_OBJ);
+            return $row->receita_total ?? 0;
+        } catch (PDOException $e) {
+            error_log("Erro ao calcular receita total: " . $e->getMessage());
+            return 0;
+        }
+    }
+    
+    // Calcular ticket médio por período
+    public function getTicketMedio($ano = null, $mes = null)
+    {
+        $sql = 'SELECT 
+                    COUNT(*) as total_ordens,
+                    COALESCE(SUM(valor_final), 0) as valor_total
+                FROM ordens_servico 
+                WHERE status = "concluida"';
+        $params = [];
+        
+        if ($ano) {
+            $sql .= ' AND YEAR(criado_em) = :ano';
+            $params[':ano'] = $ano;
+        }
+        
+        if ($mes) {
+            $sql .= ' AND MONTH(criado_em) = :mes';
+            $params[':mes'] = $mes;
+        }
+        
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            $row = $stmt->fetch(PDO::FETCH_OBJ);
+            
+            $totalOrdens = $row->total_ordens ?? 0;
+            $valorTotal = $row->valor_total ?? 0;
+            
+            return $totalOrdens > 0 ? $valorTotal / $totalOrdens : 0;
+        } catch (PDOException $e) {
+            error_log("Erro ao calcular ticket médio: " . $e->getMessage());
+            return 0;
+        }
+    }
+    
+    // Buscar ordens finalizadas por período
+    public function getOrdensFinalizadas($ano = null, $mes = null)
+    {
+        $sql = 'SELECT COUNT(*) as total 
+                FROM ordens_servico 
+                WHERE status = "concluida"';
+        $params = [];
+        
+        if ($ano) {
+            $sql .= ' AND YEAR(criado_em) = :ano';
+            $params[':ano'] = $ano;
+        }
+        
+        if ($mes) {
+            $sql .= ' AND MONTH(criado_em) = :mes';
+            $params[':mes'] = $mes;
+        }
+        
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            $row = $stmt->fetch(PDO::FETCH_OBJ);
+            return $row->total ?? 0;
+        } catch (PDOException $e) {
+            error_log("Erro ao buscar ordens finalizadas: " . $e->getMessage());
+            return 0;
+        }
+    }
+    
+    // Buscar ordens com filtros para relatórios
+    public function getOrdensComFiltros($filtros = [])
+    {
+        $sql = 'SELECT os.*, 
+                        c.nome as nome_cliente, 
+                        c.telefone as telefone_cliente,
+                        c.email as email_cliente,
+                        d.tipo as tipo_dispositivo,
+                        d.marca as marca_dispositivo,
+                        d.modelo as modelo_dispositivo
+                FROM ordens_servico os
+                LEFT JOIN clientes c ON os.cliente_id = c.id
+                LEFT JOIN dispositivos d ON os.dispositivo_id = d.id
+                WHERE 1=1';
+        
+        $params = [];
+        
+        if (isset($filtros['data_inicio']) && !empty($filtros['data_inicio'])) {
+            $sql .= ' AND DATE(os.criado_em) >= :data_inicio';
+            $params[':data_inicio'] = $filtros['data_inicio'];
+        }
+        
+        if (isset($filtros['data_fim']) && !empty($filtros['data_fim'])) {
+            $sql .= ' AND DATE(os.criado_em) <= :data_fim';
+            $params[':data_fim'] = $filtros['data_fim'];
+        }
+        
+        if (isset($filtros['status']) && !empty($filtros['status'])) {
+            $sql .= ' AND os.status = :status';
+            $params[':status'] = $filtros['status'];
+        }
+        
+        if (isset($filtros['dispositivo_tipo']) && !empty($filtros['dispositivo_tipo'])) {
+            $sql .= ' AND d.tipo = :dispositivo_tipo';
+            $params[':dispositivo_tipo'] = $filtros['dispositivo_tipo'];
+        }
+        
+        if (isset($filtros['prioridade']) && !empty($filtros['prioridade'])) {
+            $sql .= ' AND os.prioridade = :prioridade';
+            $params[':prioridade'] = $filtros['prioridade'];
+        }
+        
+        $sql .= ' ORDER BY os.criado_em DESC';
+        
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            error_log("Erro ao buscar ordens com filtros: " . $e->getMessage());
+            return [];
         }
     }
 }

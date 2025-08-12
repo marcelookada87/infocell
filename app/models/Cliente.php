@@ -175,17 +175,17 @@ class Cliente
     // Clientes mais ativos (com mais ordens de serviço)
     public function getClientesMaisAtivos($limit = 10)
     {
-        $sql = 'SELECT c.nome, c.telefone, COUNT(os.id) as total_ordens 
+        $sql = 'SELECT c.nome, c.telefone, COUNT(os.id) as total_ordens, 
+                       COALESCE(SUM(os.valor_final), 0) as valor_total
                 FROM clientes c 
                 LEFT JOIN ordens_servico os ON c.id = os.cliente_id 
                 GROUP BY c.id 
                 ORDER BY total_ordens DESC 
-                LIMIT :limit';
-        $params = [':limit' => $limit];
+                LIMIT ' . (int)$limit;
         
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute($params);
+            $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_OBJ);
         } catch (PDOException $e) {
             throw new Exception("Erro ao buscar clientes mais ativos: " . $e->getMessage());

@@ -15,6 +15,9 @@
     <!-- Custom CSS -->
     <link href="<?php echo URLROOT; ?>/css/style.css" rel="stylesheet">
     
+    <!-- Relatórios CSS -->
+    <link href="<?php echo URLROOT; ?>/css/relatorios.css" rel="stylesheet">
+    
     <!-- Forçar tema claro -->
     <style>
         html, body {

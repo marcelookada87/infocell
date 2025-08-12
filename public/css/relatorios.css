@@ -1,0 +1,275 @@
+/* Estilos específicos para páginas de Relatórios */
+
+/* Cards de estatísticas */
+.border-left-primary {
+    border-left: 0.25rem solid #4e73df !important;
+}
+
+.border-left-success {
+    border-left: 0.25rem solid #1cc88a !important;
+}
+
+.border-left-info {
+    border-left: 0.25rem solid #36b9cc !important;
+}
+
+.border-left-warning {
+    border-left: 0.25rem solid #f6c23e !important;
+}
+
+.border-left-danger {
+    border-left: 0.25rem solid #e74a3b !important;
+}
+
+/* Gráficos */
+.chart-container {
+    position: relative;
+    height: 300px;
+    margin: 20px 0;
+}
+
+/* Tabelas de relatórios */
+.table-responsive {
+    border-radius: 0.35rem;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+}
+
+.table th {
+    background-color: #f8f9fc;
+    border-top: none;
+    font-weight: 600;
+    color: #5a5c69;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+/* Filtros */
+.filtros-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.filtros-card .card-header {
+    background: transparent;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.filtros-card .form-label {
+    color: white;
+    font-weight: 600;
+}
+
+.filtros-card .form-select,
+.filtros-card .form-control {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.filtros-card .form-select option,
+.filtros-card .form-control::placeholder {
+    color: #333;
+}
+
+/* Badges de status */
+.badge {
+    font-size: 0.75em;
+    padding: 0.5em 0.75em;
+    border-radius: 0.375rem;
+}
+
+/* Progress bars */
+.progress {
+    height: 8px;
+    border-radius: 4px;
+    background-color: #eaecf4;
+}
+
+.progress-bar {
+    border-radius: 4px;
+}
+
+/* Análise de performance */
+.performance-card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.performance-card:hover {
+    transform: translateY(-5px);
+}
+
+.performance-card .border {
+    border-width: 2px !important;
+}
+
+/* Modal de exportação */
+.export-modal .modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.export-modal .modal-header .btn-close {
+    filter: invert(1);
+}
+
+/* Botões de ação */
+.btn-toolbar .btn-group {
+    margin-right: 0.5rem;
+}
+
+.btn-toolbar .btn-group:last-child {
+    margin-right: 0;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .btn-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .btn-toolbar .btn-group {
+        margin-bottom: 0.5rem;
+        margin-right: 0;
+    }
+    
+    .chart-container {
+        height: 250px;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+}
+
+/* Animações */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilos para impressão */
+@media print {
+    .btn-toolbar,
+    .filtros,
+    .modal,
+    .dropdown-menu {
+        display: none !important;
+    }
+    
+    .card {
+        border: 1px solid #ddd !important;
+        box-shadow: none !important;
+    }
+    
+    .table {
+        border-collapse: collapse !important;
+    }
+    
+    .table th,
+    .table td {
+        border: 1px solid #ddd !important;
+    }
+}
+
+/* Melhorias nos gráficos */
+canvas {
+    max-height: 400px;
+}
+
+/* Estilos para as tabelas de dados */
+.data-table {
+    background: white;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.data-table .table {
+    margin-bottom: 0;
+}
+
+.data-table .table thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+/* Estilos para os filtros aplicados */
+.filtros-aplicados {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border-left: 4px solid #2196f3;
+}
+
+.filtros-aplicados .alert-heading {
+    color: #1976d2;
+    font-weight: 600;
+}
+
+/* Estilos para os cards de relatórios detalhados */
+.relatorio-card {
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.relatorio-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.relatorio-card .card-body {
+    padding: 2rem;
+}
+
+.relatorio-card .fa-3x {
+    margin-bottom: 1rem;
+}
+
+.relatorio-card .card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.relatorio-card .card-text {
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+/* Estilos para os indicadores de tendência */
+.tendencia-crescimento {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.tendencia-queda {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.tendencia-estavel {
+    color: #ffc107;
+    font-weight: 600;
+}
+
+.tendencia-primeiro {
+    color: #17a2b8;
+    font-weight: 600;
+}

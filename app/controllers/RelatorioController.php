@@ -23,7 +23,7 @@ class RelatorioController extends Controller
     {
         $data = [
             'total_ordens' => $this->ordemServicoModel->getTotalOrdens(),
-            'ordens_por_status' => $this->ordemServicoModel->getOrdensPorStatus(),
+            'ordens_por_status' => $this->ordemServicoModel->getOrdensPorStatusRelatorio(),
             'ordens_por_mes' => $this->ordemServicoModel->getOrdensPorMes(),
             'receita_por_mes' => $this->ordemServicoModel->getReceitaPorMes(),
             'dispositivos_mais_reparados' => $this->ordemServicoModel->getDispositivosMaisReparados(),
@@ -53,6 +53,10 @@ class RelatorioController extends Controller
             $filtros['dispositivo_tipo'] = $_GET['dispositivo_tipo'];
         }
         
+        if (isset($_GET['prioridade']) && !empty($_GET['prioridade'])) {
+            $filtros['prioridade'] = $_GET['prioridade'];
+        }
+        
         $ordens = $this->ordemServicoModel->getOrdensComFiltros($filtros);
         
         $data = [
@@ -68,9 +72,11 @@ class RelatorioController extends Controller
         $ano = isset($_GET['ano']) ? $_GET['ano'] : date('Y');
         $mes = isset($_GET['mes']) ? $_GET['mes'] : null;
         
+        $receitaPorMes = $this->ordemServicoModel->getReceitaPorMes($ano);
+        
         $data = [
             'receita_total' => $this->ordemServicoModel->getReceitaTotal($ano, $mes),
-            'receita_por_mes' => $this->ordemServicoModel->getReceitaPorMes($ano),
+            'receita_por_mes' => $receitaPorMes['dados'] ?? [],
             'ticket_medio' => $this->ordemServicoModel->getTicketMedio($ano, $mes),
             'ordens_pagas' => $this->ordemServicoModel->getOrdensFinalizadas($ano, $mes),
             'ano_selecionado' => $ano,
