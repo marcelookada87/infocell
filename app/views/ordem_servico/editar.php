@@ -6,10 +6,10 @@
 <div class="ordem-servico-editar">
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">
-        <i class="fas fa-edit"></i> Editar Ordem de Serviço #<?php echo $data['ordem']['id']; ?>
+        <i class="fas fa-edit"></i> Editar Ordem de Serviço #<?php echo $data['ordem']->id; ?>
     </h1>
     <div class="btn-toolbar mb-2 mb-md-0">
-        <a href="<?php echo URLROOT; ?>/ordem-servico/visualizar/<?php echo $data['ordem']['id']; ?>" class="btn btn-sm btn-outline-secondary">
+        <a href="<?php echo URLROOT; ?>/ordem-servico/visualizar/<?php echo $data['ordem']->id; ?>" class="btn btn-sm btn-outline-secondary">
             <i class="fas fa-eye"></i> Visualizar
         </a>
         <a href="<?php echo URLROOT; ?>/ordem-servico" class="btn btn-sm btn-outline-secondary">
@@ -22,7 +22,7 @@
     <div class="col-md-12">
         <div class="card shadow">
             <div class="card-body">
-                <form action="<?php echo URLROOT; ?>/ordem-servico/editar/<?php echo $data['ordem']['id']; ?>" method="post" id="formEditarOS">
+                <form action="<?php echo URLROOT; ?>/ordem-servico/editar/<?php echo $data['ordem']->id; ?>" method="post" id="formEditarOS">
                     <div class="row">
                         <!-- Dados do Cliente (Somente Leitura) -->
                         <div class="col-md-6">
@@ -32,7 +32,7 @@
                             
                             <div class="mb-3">
                                 <label class="form-label">Cliente</label>
-                                <input type="text" class="form-control" value="<?php echo $data['cliente']['nome']; ?> - <?php echo $data['cliente']['telefone']; ?>" readonly>
+                                <input type="text" class="form-control" value="<?php echo $data['cliente']->nome; ?> - <?php echo $data['cliente']->telefone; ?>" readonly>
                                 <div class="form-text">
                                     <i class="fas fa-info-circle"></i> Cliente não pode ser alterado após criação
                                 </div>
@@ -48,24 +48,24 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Tipo</label>
-                                    <input type="text" class="form-control" value="<?php echo ucfirst($data['ordem']['dispositivo_tipo']); ?>" readonly>
+                                    <input type="text" class="form-control" value="<?php echo ucfirst($data['ordem']->dispositivo_tipo); ?>" readonly>
                                 </div>
                                 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Prioridade</label>
-                                    <input type="text" class="form-control" value="<?php echo ucfirst($data['ordem']['prioridade']); ?>" readonly>
+                                    <input type="text" class="form-control" value="<?php echo ucfirst($data['ordem']->prioridade); ?>" readonly>
                                 </div>
                             </div>
                             
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Marca</label>
-                                    <input type="text" class="form-control" value="<?php echo $data['ordem']['dispositivo_marca']; ?>" readonly>
+                                    <input type="text" class="form-control" value="<?php echo $data['ordem']->dispositivo_marca; ?>" readonly>
                                 </div>
                                 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Modelo</label>
-                                    <input type="text" class="form-control" value="<?php echo $data['ordem']['dispositivo_modelo']; ?>" readonly>
+                                    <input type="text" class="form-control" value="<?php echo $data['ordem']->dispositivo_modelo; ?>" readonly>
                                 </div>
                             </div>
                         </div>
@@ -82,12 +82,12 @@
                             
                             <div class="mb-3">
                                 <label class="form-label">Descrição do Problema</label>
-                                <textarea class="form-control" rows="4" readonly><?php echo $data['ordem']['problema_relatado']; ?></textarea>
+                                <textarea class="form-control" rows="4" readonly><?php echo $data['ordem']->problema_relatado; ?></textarea>
                             </div>
                             
                             <div class="mb-3">
                                 <label class="form-label">Observações Iniciais</label>
-                                <textarea class="form-control" rows="3" readonly><?php echo $data['ordem']['observacoes']; ?></textarea>
+                                <textarea class="form-control" rows="3" readonly><?php echo $data['ordem']->observacoes; ?></textarea>
                             </div>
                         </div>
                         
@@ -101,7 +101,7 @@
                                 <label class="form-label">Valor Estimado</label>
                                 <div class="input-group">
                                     <span class="input-group-text">R$</span>
-                                    <input type="text" class="form-control" value="<?php echo $data['ordem']['valor_estimado']; ?>" readonly>
+                                    <input type="text" class="form-control" value="<?php echo $data['ordem']->valor_estimado; ?>" readonly>
                                 </div>
                             </div>
                             
@@ -112,11 +112,11 @@
                                         <i class="fas fa-info-circle"></i> Informações da OS
                                     </h6>
                                     <ul class="list-unstyled small mb-0">
-                                        <li><strong>Status atual:</strong> <span class="<?php echo getStatusBadgeClass($data['ordem']['status']); ?>"><?php echo getStatusName($data['ordem']['status']); ?></span></li>
-                                        <li><strong>Data de entrada:</strong> <?php echo date('d/m/Y', strtotime($data['ordem']['criado_em'])); ?></li>
-                                        <li><strong>Responsável:</strong> <?php echo $data['ordem']['usuario_nome']; ?></li>
-                                        <?php if ($data['ordem']['atualizado_em']): ?>
-                                        <li><strong>Última atualização:</strong> <?php echo date('d/m/Y H:i', strtotime($data['ordem']['atualizado_em'])); ?></li>
+                                        <li><strong>Status atual:</strong> <span class="<?php echo getStatusBadgeClass($data['ordem']->status); ?>"><?php echo getStatusName($data['ordem']->status); ?></span></li>
+                                        <li><strong>Data de entrada:</strong> <?php echo date('d/m/Y', strtotime($data['ordem']->criado_em)); ?></li>
+                                        <li><strong>Responsável:</strong> <?php echo $data['ordem']->usuario_nome; ?></li>
+                                        <?php if ($data['ordem']->atualizado_em): ?>
+                                        <li><strong>Última atualização:</strong> <?php echo date('d/m/Y H:i', strtotime($data['ordem']->atualizado_em)); ?></li>
                                         <?php endif; ?>
                                     </ul>
                                 </div>
@@ -144,7 +144,7 @@
                                 </div>
                                 <small class="text-muted">
                                     <i class="fas fa-info-circle"></i> 
-                                    Próxima etapa: <span id="nextStepText"><?php echo getNextStep($data['ordem']['status']); ?></span>
+                                    Próxima etapa: <span id="nextStepText"><?php echo getNextStep($data['ordem']->status); ?></span>
                                 </small>
                             </div>
                             
@@ -154,12 +154,12 @@
                                     <select name="status" id="status" class="form-select" required 
                                             data-bs-toggle="tooltip" data-bs-placement="top" 
                                             title="Selecione o status atual da ordem de serviço">
-                                        <option value="aberta" <?php echo ($data['ordem']['status'] == 'aberta') ? 'selected' : ''; ?>>Aberta</option>
-                                        <option value="em_andamento" <?php echo ($data['ordem']['status'] == 'em_andamento') ? 'selected' : ''; ?>>Em Andamento</option>
-                                        <option value="aguardando_pecas" <?php echo ($data['ordem']['status'] == 'aguardando_pecas') ? 'selected' : ''; ?>>Aguardando Peças</option>
-                                        <option value="aguardando_aprovacao" <?php echo ($data['ordem']['status'] == 'aguardando_aprovacao') ? 'selected' : ''; ?>>Aguardando Aprovação</option>
-                                        <option value="concluida" <?php echo ($data['ordem']['status'] == 'concluida') ? 'selected' : ''; ?>>Concluída</option>
-                                        <option value="cancelada" <?php echo ($data['ordem']['status'] == 'cancelada') ? 'selected' : ''; ?>>Cancelada</option>
+                                        <option value="aberta" <?php echo ($data['ordem']->status == 'aberta') ? 'selected' : ''; ?>>Aberta</option>
+                                        <option value="em_andamento" <?php echo ($data['ordem']->status == 'em_andamento') ? 'selected' : ''; ?>>Em Andamento</option>
+                                        <option value="aguardando_pecas" <?php echo ($data['ordem']->status == 'aguardando_pecas') ? 'selected' : ''; ?>>Aguardando Peças</option>
+                                        <option value="aguardando_aprovacao" <?php echo ($data['ordem']->status == 'aguardando_aprovacao') ? 'selected' : ''; ?>>Aguardando Aprovação</option>
+                                        <option value="concluida" <?php echo ($data['ordem']->status == 'concluida') ? 'selected' : ''; ?>>Concluída</option>
+                                        <option value="cancelada" <?php echo ($data['ordem']->status == 'cancelada') ? 'selected' : ''; ?>>Cancelada</option>
                                     </select>
                                     <div class="form-text">
                                         <i class="fas fa-info-circle"></i> Atualize o status conforme o progresso
@@ -171,7 +171,7 @@
                                     <div class="input-group">
                                         <span class="input-group-text">R$</span>
                                         <input type="text" name="valor_final" id="valor_final" class="form-control valor" 
-                                               value="<?php echo $data['ordem']['valor_final']; ?>" placeholder="0,00"
+                                               value="<?php echo $data['ordem']->valor_final; ?>" placeholder="0,00"
                                                data-bs-toggle="tooltip" data-bs-placement="top" 
                                                title="Valor final cobrado do cliente (opcional)">
                                     </div>
@@ -186,7 +186,7 @@
                                 <textarea name="problema_diagnosticado" id="problema_diagnosticado" rows="4" 
                                           class="form-control" placeholder="Descreva o problema real encontrado durante a análise..."
                                           data-bs-toggle="tooltip" data-bs-placement="top" 
-                                          title="Descreva o problema real encontrado durante a análise técnica"><?php echo $data['ordem']['problema_diagnosticado']; ?></textarea>
+                                          title="Descreva o problema real encontrado durante a análise técnica"><?php echo $data['ordem']->problema_diagnosticado; ?></textarea>
                                 <div class="form-text">
                                     <i class="fas fa-info-circle"></i> Problema real encontrado durante a análise técnica
                                 </div>
@@ -197,7 +197,7 @@
                                 <textarea name="solucao_aplicada" id="solucao_aplicada" rows="4" 
                                           class="form-control" placeholder="Descreva a solução aplicada para resolver o problema..."
                                           data-bs-toggle="tooltip" data-bs-placement="top" 
-                                          title="Descreva a solução técnica aplicada para resolver o problema"><?php echo $data['ordem']['solucao_aplicada']; ?></textarea>
+                                          title="Descreva a solução técnica aplicada para resolver o problema"><?php echo $data['ordem']->solucao_aplicada; ?></textarea>
                                 <div class="form-text">
                                     <i class="fas fa-info-circle"></i> Solução técnica aplicada para resolver o problema
                                 </div>
@@ -208,7 +208,7 @@
                                 <textarea name="observacoes_tecnico" id="observacoes_tecnico" rows="3" 
                                           class="form-control" placeholder="Observações técnicas, peças utilizadas, testes realizados..."
                                           data-bs-toggle="tooltip" data-bs-placement="top" 
-                                          title="Observações técnicas, peças utilizadas, testes realizados (opcional)"><?php echo $data['ordem']['observacoes_tecnico']; ?></textarea>
+                                          title="Observações técnicas, peças utilizadas, testes realizados (opcional)"><?php echo $data['ordem']->observacoes_tecnico; ?></textarea>
                                 <div class="form-text">
                                     <i class="fas fa-info-circle"></i> Observações técnicas, peças utilizadas, testes realizados
                                 </div>
@@ -234,12 +234,12 @@
                                             </div>
                                             <div class="timeline-content">
                                                 <h6 class="timeline-title">OS Criada</h6>
-                                                <p class="timeline-text">Ordem de serviço criada por <?php echo $data['ordem']['usuario_nome']; ?></p>
-                                                <small class="text-muted"><?php echo date('d/m/Y H:i', strtotime($data['ordem']['criado_em'])); ?></small>
+                                                <p class="timeline-text">Ordem de serviço criada por <?php echo $data['ordem']->usuario_nome; ?></p>
+                                                <small class="text-muted"><?php echo date('d/m/Y H:i', strtotime($data['ordem']->criado_em)); ?></small>
                                             </div>
                                         </div>
                                         
-                                        <?php if ($data['ordem']['atualizado_em']): ?>
+                                        <?php if ($data['ordem']->atualizado_em): ?>
                                         <div class="timeline-item">
                                             <div class="timeline-marker bg-warning">
                                                 <i class="fas fa-edit"></i>
@@ -247,7 +247,7 @@
                                             <div class="timeline-content">
                                                 <h6 class="timeline-title">OS Atualizada</h6>
                                                 <p class="timeline-text">Última atualização realizada</p>
-                                                <small class="text-muted"><?php echo date('d/m/Y H:i', strtotime($data['ordem']['atualizado_em'])); ?></small>
+                                                <small class="text-muted"><?php echo date('d/m/Y H:i', strtotime($data['ordem']->atualizado_em)); ?></small>
                                             </div>
                                         </div>
                                         <?php endif; ?>
@@ -263,7 +263,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="d-flex justify-content-between">
-                                <a href="<?php echo URLROOT; ?>/ordem-servico/visualizar/<?php echo $data['ordem']['id']; ?>" class="btn btn-secondary">
+                                <a href="<?php echo URLROOT; ?>/ordem-servico/visualizar/<?php echo $data['ordem']->id; ?>" class="btn btn-secondary">
                                     <i class="fas fa-times"></i> Cancelar
                                 </a>
                                 <button type="submit" class="btn btn-primary" id="btnSalvar">
@@ -288,7 +288,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Tem certeza que deseja salvar as alterações na Ordem de Serviço #<?php echo $data['ordem']['id']; ?>?</p>
+                <p>Tem certeza que deseja salvar as alterações na Ordem de Serviço #<?php echo $data['ordem']->id; ?>?</p>
                 <div class="alert alert-info">
                     <i class="fas fa-info-circle"></i>
                     <strong>Lembrete:</strong> As alterações não podem ser desfeitas após o salvamento.

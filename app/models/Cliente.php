@@ -2,9 +2,16 @@
 
 class Cliente
 {
+    private $pdo;
+    
     public function __construct()
     {
-        // Não precisa mais instanciar Database, as funções PDO são estáticas
+        try {
+            $this->pdo = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASS);
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            throw new Exception("Erro de conexão com banco: " . $e->getMessage());
+        }
     }
     
     // Criar cliente
@@ -23,9 +30,13 @@ class Cliente
             ':cep' => $data['cep']
         ];
         
-        $result = pdo_query($sql, $params);
-        
-        return $result !== false;
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $result = $stmt->execute($params);
+            return $result;
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao criar cliente: " . $e->getMessage());
+        }
     }
     
     // Buscar todos os clientes
@@ -33,9 +44,13 @@ class Cliente
     {
         $sql = 'SELECT * FROM clientes ORDER BY nome ASC';
         
-        $result = pdo_query($sql);
-        
-        return pdo_fetch_array($result);
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao buscar clientes: " . $e->getMessage());
+        }
     }
     
     // Buscar cliente por ID
@@ -44,9 +59,13 @@ class Cliente
         $sql = 'SELECT * FROM clientes WHERE id = :id';
         $params = [':id' => $id];
         
-        $result = pdo_query($sql, $params);
-        
-        return pdo_fetch_item($result);
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            return $stmt->fetch(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao buscar cliente por ID: " . $e->getMessage());
+        }
     }
     
     // Atualizar cliente
@@ -67,9 +86,13 @@ class Cliente
             ':cep' => $data['cep']
         ];
         
-        $result = pdo_query($sql, $params);
-        
-        return $result !== false;
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $result = $stmt->execute($params);
+            return $result;
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao atualizar cliente: " . $e->getMessage());
+        }
     }
     
     // Deletar cliente
@@ -78,9 +101,13 @@ class Cliente
         $sql = 'DELETE FROM clientes WHERE id = :id';
         $params = [':id' => $id];
         
-        $result = pdo_query($sql, $params);
-        
-        return $result !== false;
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $result = $stmt->execute($params);
+            return $result;
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao deletar cliente: " . $e->getMessage());
+        }
     }
     
     // Encontrar cliente por email
@@ -89,11 +116,14 @@ class Cliente
         $sql = 'SELECT * FROM clientes WHERE email = :email';
         $params = [':email' => $email];
         
-        $result = pdo_query($sql, $params);
-        
-        $row = pdo_fetch_item($result);
-        
-        return !empty($row);
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            $row = $stmt->fetch(PDO::FETCH_OBJ);
+            return !empty($row);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao buscar cliente por email: " . $e->getMessage());
+        }
     }
     
     // Encontrar cliente por CPF
@@ -102,11 +132,14 @@ class Cliente
         $sql = 'SELECT * FROM clientes WHERE cpf = :cpf';
         $params = [':cpf' => $cpf];
         
-        $result = pdo_query($sql, $params);
-        
-        $row = pdo_fetch_item($result);
-        
-        return !empty($row);
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            $row = $stmt->fetch(PDO::FETCH_OBJ);
+            return !empty($row);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao buscar cliente por CPF: " . $e->getMessage());
+        }
     }
     
     // Buscar clientes por nome
@@ -115,9 +148,13 @@ class Cliente
         $sql = 'SELECT * FROM clientes WHERE nome LIKE :nome ORDER BY nome ASC';
         $params = [':nome' => '%' . $nome . '%'];
         
-        $result = pdo_query($sql, $params);
-        
-        return pdo_fetch_array($result);
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao buscar clientes por nome: " . $e->getMessage());
+        }
     }
     
     // Contar total de clientes
@@ -125,11 +162,14 @@ class Cliente
     {
         $sql = 'SELECT COUNT(*) as total FROM clientes';
         
-        $result = pdo_query($sql);
-        
-        $row = pdo_fetch_item($result);
-        
-        return $row['total'] ?? 0;
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_OBJ);
+            return $row->total ?? 0;
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao contar clientes: " . $e->getMessage());
+        }
     }
     
     // Clientes mais ativos (com mais ordens de serviço)
@@ -143,9 +183,13 @@ class Cliente
                 LIMIT :limit';
         $params = [':limit' => $limit];
         
-        $result = pdo_query($sql, $params);
-        
-        return pdo_fetch_array($result);
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao buscar clientes mais ativos: " . $e->getMessage());
+        }
     }
 }
 

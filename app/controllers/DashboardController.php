@@ -45,7 +45,7 @@ class DashboardController extends Controller
                 'ordens_recentes' => $this->ordemServicoModel->getOrdensRecentes(10),
                 'dispositivos_mais_reparados' => $this->dispositivoModel->getDispositivosMaisReparados(5),
                 'receita_mensal' => $this->ordemServicoModel->getReceitaMensal(),
-                'user_name' => $loggedInUser->nome ?? 'Usuário'
+                'user_name' => is_object($loggedInUser) ? $loggedInUser->nome : 'Usuário'
             ];
         } else {
             // Dados mock para demonstração
@@ -58,7 +58,7 @@ class DashboardController extends Controller
                 'ordens_recentes' => [],
                 'dispositivos_mais_reparados' => [],
                 'receita_mensal' => 0,
-                'user_name' => $loggedInUser->nome ?? 'Usuário'
+                'user_name' => is_object($loggedInUser) ? $loggedInUser->nome : 'Usuário'
             ];
         }
         
@@ -70,7 +70,7 @@ class DashboardController extends Controller
         $loggedInUser = $this->userModel->isLoggedIn();
         
         $data = [
-            'user' => $loggedInUser
+            'user' => is_object($loggedInUser) ? $loggedInUser : null
         ];
         
         $this->view('dashboard/perfil', $data);

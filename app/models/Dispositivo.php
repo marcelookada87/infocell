@@ -2,9 +2,16 @@
 
 class Dispositivo
 {
+    private $pdo;
+    
     public function __construct()
     {
-        // Não precisa mais instanciar Database, as funções PDO são estáticas
+        try {
+            $this->pdo = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASS);
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            throw new Exception("Erro de conexão com banco: " . $e->getMessage());
+        }
     }
     
     // Buscar dispositivos mais reparados
@@ -17,9 +24,17 @@ class Dispositivo
                 LIMIT :limit';
         $params = [':limit' => $limit];
         
-        $result = pdo_query($sql, $params);
-        
-        return pdo_fetch_array($result);
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_OBJ);
+            return $result ? $result : [];
+        } catch (PDOException $e) {
+            // Em caso de erro, retornar array vazio em vez de lançar exceção
+            error_log("Erro ao buscar dispositivos mais reparados: " . $e->getMessage());
+            return [];
+        }
     }
     
     // Buscar tipos de dispositivos únicos
@@ -27,9 +42,13 @@ class Dispositivo
     {
         $sql = 'SELECT DISTINCT dispositivo_tipo FROM ordens_servico ORDER BY dispositivo_tipo';
         
-        $result = pdo_query($sql);
-        
-        return pdo_fetch_array($result);
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao buscar tipos de dispositivos: " . $e->getMessage());
+        }
     }
     
     // Buscar marcas por tipo
@@ -40,9 +59,13 @@ class Dispositivo
                 ORDER BY dispositivo_marca';
         $params = [':tipo' => $tipo];
         
-        $result = pdo_query($sql, $params);
-        
-        return pdo_fetch_array($result);
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao buscar marcas por tipo: " . $e->getMessage());
+        }
     }
     
     // Buscar modelos por marca e tipo
@@ -56,9 +79,13 @@ class Dispositivo
             ':marca' => $marca
         ];
         
-        $result = pdo_query($sql, $params);
-        
-        return pdo_fetch_array($result);
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao buscar modelos por marca e tipo: " . $e->getMessage());
+        }
     }
     
     // Estatísticas por tipo de dispositivo
@@ -72,9 +99,13 @@ class Dispositivo
                 GROUP BY dispositivo_tipo 
                 ORDER BY total_ordens DESC';
         
-        $result = pdo_query($sql);
-        
-        return pdo_fetch_array($result);
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao buscar estatísticas por tipo: " . $e->getMessage());
+        }
     }
     
     // Problemas mais comuns por tipo de dispositivo
@@ -96,9 +127,14 @@ class Dispositivo
         
         $params[':limit'] = $limit;
         
-        $result = pdo_query($sql, $params);
-        
-        return pdo_fetch_array($result);
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute($params);
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao buscar problemas mais comuns: " . $e->getMessage());
+        }
     }
     
     // Tempo médio de reparo por tipo
@@ -111,9 +147,13 @@ class Dispositivo
                 GROUP BY dispositivo_tipo 
                 ORDER BY tempo_medio_dias';
         
-        $result = pdo_query($sql);
-        
-        return pdo_fetch_array($result);
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao buscar tempo médio de reparo: " . $e->getMessage());
+        }
     }
 }
 

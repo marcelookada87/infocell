@@ -2,9 +2,16 @@
 
 class User
 {
+    private $pdo;
+    
     public function __construct()
     {
-        // Não precisa mais instanciar Database, as funções PDO são estáticas
+        try {
+            $this->pdo = new PDO("mysql:host=".DB_HOST.";dbname=".DB_NAME, DB_USER, DB_PASS);
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            throw new Exception("Erro de conexão com banco: " . $e->getMessage());
+        }
     }
     
     // Registrar usuário
@@ -19,9 +26,13 @@ class User
             ':tipo' => $data['tipo']
         ];
         
-        $result = pdo_query($sql, $params);
-        
-        return $result !== false;
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $result = $stmt->execute($params);
+            return $result;
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao registrar usuário: " . $e->getMessage());
+        }
     }
     
     // Login do usuário
@@ -33,22 +44,23 @@ class User
             $sql = 'SELECT * FROM usuarios WHERE email = :email AND ativo = 1';
             $params = [':email' => $email];
             
-            $result = pdo_query($sql, $params);
-            $row = pdo_fetch_item($result);
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            $row = $stmt->fetch(PDO::FETCH_OBJ);
             
             if ($row) {
                 error_log("User found in database: " . $email);
-                $hashed_password = $row['senha'];
+                $hashed_password = $row->senha;
                 
                 if (password_verify($password, $hashed_password)) {
                     error_log("Password verified successfully for: " . $email);
                     
                     // Gerar novo hash de autenticação
-                    $authHash = $this->generateAndStoreAuthHash($row['id'], $email);
+                    $authHash = $this->generateAndStoreAuthHash($row->id, $email);
                     
                     if ($authHash) {
-                        $row['auth_hash'] = $authHash;
-                        return (object) $row; // Converter para objeto para manter compatibilidade
+                        $row->auth_hash = $authHash;
+                        return $row; // Já é objeto
                     } else {
                         error_log("Failed to generate auth hash for user: " . $email);
                         return false;
@@ -61,7 +73,7 @@ class User
                 error_log("No user found in database for: " . $email);
                 return false;
             }
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             error_log("Database error during login: " . $e->getMessage());
             throw new Exception("Erro no banco de dados durante login: " . $e->getMessage());
         }
@@ -79,16 +91,17 @@ class User
                 ':id' => $userId
             ];
             
-            $result = pdo_query($sql, $params);
+            $stmt = $this->pdo->prepare($sql);
+            $result = $stmt->execute($params);
             
-            if ($result !== false) {
+            if ($result) {
                 error_log("Auth hash stored successfully for user ID: " . $userId);
                 return $authHash;
             } else {
                 error_log("Failed to store auth hash for user ID: " . $userId);
                 return false;
             }
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             error_log("Error generating/storing auth hash: " . $e->getMessage());
             throw new Exception("Erro ao gerar/armazenar hash de autenticação: " . $e->getMessage());
         }
@@ -104,17 +117,18 @@ class User
                 ':auth_hash' => $authHash
             ];
             
-            $result = pdo_query($sql, $params);
-            $row = pdo_fetch_item($result);
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            $row = $stmt->fetch(PDO::FETCH_OBJ);
             
             if ($row) {
                 error_log("Auth hash validated successfully for user ID: " . $userId);
-                return (object) $row; // Converter para objeto para manter compatibilidade
+                return $row; // Já é objeto
             } else {
                 error_log("Invalid auth hash for user ID: " . $userId);
                 return false;
             }
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             error_log("Error validating auth hash: " . $e->getMessage());
             throw new Exception("Erro ao validar hash de autenticação: " . $e->getMessage());
         }
@@ -127,16 +141,17 @@ class User
             $sql = 'UPDATE usuarios SET auth_hash = NULL WHERE id = :id';
             $params = [':id' => $userId];
             
-            $result = pdo_query($sql, $params);
+            $stmt = $this->pdo->prepare($sql);
+            $result = $stmt->execute($params);
             
-            if ($result !== false) {
+            if ($result) {
                 error_log("Auth hash invalidated successfully for user ID: " . $userId);
                 return true;
             } else {
                 error_log("Failed to invalidate auth hash for user ID: " . $userId);
                 return false;
             }
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             error_log("Error invalidating auth hash: " . $e->getMessage());
             throw new Exception("Erro ao invalidar hash de autenticação: " . $e->getMessage());
         }
@@ -148,7 +163,8 @@ class User
         // Primeiro verificar se há sessão ativa
         if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
             error_log("User logged in via session: " . $_SESSION['user_id']);
-            return true;
+            // Retornar dados do usuário da sessão
+            return $this->getUserById($_SESSION['user_id']);
         }
         
         // Se não há sessão, verificar cookie
@@ -191,8 +207,9 @@ class User
             $sql = 'SELECT * FROM usuarios WHERE email = :email AND ativo = 1';
             $params = [':email' => $email];
             
-            $result = pdo_query($sql, $params);
-            $row = pdo_fetch_item($result);
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            $row = $stmt->fetch(PDO::FETCH_OBJ);
             
             if ($row) {
                 error_log("User found with email: " . $email);
@@ -201,7 +218,7 @@ class User
                 error_log("No user found with email: " . $email);
                 return false;
             }
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             error_log("Database error finding user by email: " . $e->getMessage());
             throw new Exception("Erro ao buscar usuário por email: " . $e->getMessage());
         }
@@ -213,9 +230,14 @@ class User
         $sql = 'SELECT * FROM usuarios WHERE id = :id AND ativo = 1';
         $params = [':id' => $id];
         
-        $result = pdo_query($sql, $params);
-        
-        return pdo_fetch_item($result);
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            $row = $stmt->fetch(PDO::FETCH_OBJ);
+            return $row ? $row : false;
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao buscar usuário por ID: " . $e->getMessage());
+        }
     }
     
     // Atualizar perfil do usuário
@@ -229,9 +251,13 @@ class User
             ':email' => $data['email']
         ];
         
-        $result = pdo_query($sql, $params);
-        
-        return $result !== false;
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $result = $stmt->execute($params);
+            return $result;
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao atualizar perfil: " . $e->getMessage());
+        }
     }
     
     // Alterar senha
@@ -244,9 +270,13 @@ class User
             ':senha' => $data['senha']
         ];
         
-        $result = pdo_query($sql, $params);
-        
-        return $result !== false;
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $result = $stmt->execute($params);
+            return $result;
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao alterar senha: " . $e->getMessage());
+        }
     }
     
     // Listar todos os usuários (admin)
@@ -254,9 +284,13 @@ class User
     {
         $sql = 'SELECT id, nome, email, tipo, criado_em FROM usuarios WHERE ativo = 1 ORDER BY criado_em DESC';
         
-        $result = pdo_query($sql);
-        
-        return pdo_fetch_array($result);
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao listar usuários: " . $e->getMessage());
+  }
     }
 }
 

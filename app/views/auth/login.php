@@ -108,13 +108,7 @@
                                     </div>
                                 </div>
                                 
-                                <div class="text-center mt-4">
-                                    <p class="text-muted small">
-                                        <strong>Dados de teste:</strong><br>
-                                        Email: admin@infocell.com<br>
-                                        Senha: admin123
-                                    </p>
-                                </div>
+                                <!-- Dados de teste removidos -->
                             </div>
                         </div>
                     </div>

@@ -100,7 +100,7 @@ class ClienteController extends Controller
         
         // Buscar ordens de serviço do cliente
         $ordemServicoModel = $this->model('OrdemServico');
-        $ordens_servico = $ordemServicoModel->getOrdensByClienteId($id);
+        $ordens_servico = $ordemServicoModel->getOrdensPorCliente($id);
         
         $data = [
             'cliente' => $cliente,

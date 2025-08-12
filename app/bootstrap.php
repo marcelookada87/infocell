@@ -15,10 +15,18 @@ require_once APPROOT . '/app/helpers/cookie_helper.php';
 require_once APPROOT . '/app/helpers/sanitize_helper.php';
 require_once APPROOT . '/app/helpers/ordem_servico_helper.php';
 
-// Autoload das classes core (não controllers)
+// Autoload das classes
 spl_autoload_register(function($className) {
-    // Só carregar classes core, não controllers
+    // Carregar classes core
     if (file_exists(APPROOT . '/core/' . $className . '.php')) {
         require_once APPROOT . '/core/' . $className . '.php';
+    }
+    // Carregar classes de modelo
+    elseif (file_exists(APPROOT . '/app/models/' . $className . '.php')) {
+        require_once APPROOT . '/app/models/' . $className . '.php';
+    }
+    // Carregar controllers
+    elseif (file_exists(APPROOT . '/app/controllers/' . $className . 'Controller.php')) {
+        require_once APPROOT . '/app/controllers/' . $className . 'Controller.php';
     }
 });

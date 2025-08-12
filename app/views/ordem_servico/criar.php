@@ -28,9 +28,9 @@
                                 <select name="cliente_id" id="cliente_id" class="form-select <?php echo (!empty($data['cliente_id_err'])) ? 'is-invalid' : ''; ?>" required>
                                     <option value="">Selecione o cliente</option>
                                     <?php foreach ($data['clientes'] as $cliente): ?>
-                                    <option value="<?php echo $cliente['id']; ?>" <?php echo ($data['cliente_id'] == $cliente['id']) ? 'selected' : ''; ?> >
-                                        <?php echo $cliente['nome']; ?> - <?php echo $cliente['telefone']; ?>
-                                    </option>
+                                                            <option value="<?php echo $cliente->id; ?>" <?php echo ($data['cliente_id'] == $cliente->id) ? 'selected' : ''; ?> >
+                            <?php echo $cliente->nome; ?> - <?php echo $cliente->telefone; ?>
+                        </option>
                                     <?php endforeach; ?>
                                 </select>
                                 <div class="invalid-feedback">

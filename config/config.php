@@ -14,11 +14,6 @@ define('SITENAME', 'InfoCell - Sistema de Ordem de Serviço');
 // Versão da aplicação
 define('APPVERSION', '1.0.0');
 
-// Configurações de sessão
-ini_set('session.cookie_httponly', 1);
-ini_set('session.cookie_secure', 0); // Mudar para 1 em produção com HTTPS
-ini_set('session.use_only_cookies', 1);
-
 // Timezone
 date_default_timezone_set('America/Sao_Paulo');
 
