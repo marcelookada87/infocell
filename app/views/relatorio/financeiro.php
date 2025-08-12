@@ -448,6 +448,8 @@
     </div>
 </div>
 
+<?php require APPROOT . '/app/views/inc/footer.php'; ?>
+
 <script>
 // Dados para os gráficos
 const receitaPorMesData = <?php echo json_encode($data['receita_por_mes'] ?? []); ?>;
@@ -571,4 +573,3 @@ $(document).ready(function() {
 <?php endif; ?>
 </script>
 
-<?php require APPROOT . '/app/views/inc/footer.php'; ?>

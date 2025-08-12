@@ -379,6 +379,9 @@
     </div>
 </div>
 
+
+<?php require APPROOT . '/app/views/inc/footer.php'; ?>
+
 <script>
 // Função para exportar tabela
 function exportarTabela() {
@@ -410,4 +413,3 @@ $(document).ready(function() {
 <?php endif; ?>
 </script>
 
-<?php require APPROOT . '/app/views/inc/footer.php'; ?>

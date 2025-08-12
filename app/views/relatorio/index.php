@@ -403,6 +403,9 @@
     </div>
 </div>
 
+
+<?php require APPROOT . '/app/views/inc/footer.php'; ?>
+
 <script>
 // Dados para os gráficos
 const ordensPorStatusData = <?php echo json_encode($data['ordens_por_status'] ?? []); ?>;
@@ -496,4 +499,3 @@ function exportarRelatorio() {
 }
 </script>
 
-<?php require APPROOT . '/app/views/inc/footer.php'; ?>
